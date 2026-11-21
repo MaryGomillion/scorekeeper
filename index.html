@@ -299,14 +299,14 @@
             <div id="uno-inperson-victory-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden items-center justify-center p-4">
                 <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center">
                     <div class="inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 bg-rose-500/10 text-rose-400 border border-rose-500/30">
-                        🏆 Uno Match Winner • 500+ Points
+                        🏆 Uno Match Winner • 500+ Points Reached
                     </div>
                     <div id="uno-victory-winner-badge" class="flex items-center justify-center gap-2.5 mb-1"></div>
                     <p class="text-xs text-slate-400 mb-6">
-                        Reached <span id="uno-victory-winner-score" class="text-rose-400 font-bold">500 pts</span> to claim victory!
+                        Winning low score: <span id="uno-victory-winner-score" class="text-emerald-400 font-bold">0 pts</span>
                     </p>
                     <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 mb-6 text-left">
-                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3">Final Standings</div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3">Final Standings (Lowest Wins)</div>
                         <div id="uno-victory-standings-list" class="space-y-1.5 text-xs"></div>
                     </div>
                     <div class="flex items-center justify-center gap-3">
@@ -1074,9 +1074,11 @@
 
             renderUnoInPerson();
 
-            const winner = [...unoInPersonState.players].sort((a, b) => b.score - a.score).find(p => p.score >= 500);
-            if (winner && !unoInPersonState.victoryShown) {
+            const matchOver = unoInPersonState.players.some(p => p.score >= 500);
+            if (matchOver && !unoInPersonState.victoryShown) {
                 unoInPersonState.victoryShown = true;
+                const sorted = [...unoInPersonState.players].sort((a, b) => a.score - b.score);
+                const winner = sorted[0];
                 const modal = document.getElementById('uno-inperson-victory-modal');
                 const wBadge = document.getElementById('uno-victory-winner-badge');
                 const wScore = document.getElementById('uno-victory-winner-score');
@@ -1094,18 +1096,20 @@
                 }
                 if (wScore) wScore.innerText = `${winner.score} pts`;
                 if (listEl) {
-                    const sorted = [...unoInPersonState.players].sort((a, b) => b.score - a.score);
                     listEl.innerHTML = sorted.map((p, idx) => {
                         const c = getPlayerColor(p, idx);
+                        const isWinner = idx === 0;
+                        const crossed500 = p.score >= 500;
                         return `
-                            <div class="flex justify-between items-center py-2 px-3 rounded-xl ${idx === 0 ? 'bg-rose-500/15 border border-rose-500/30 font-bold text-rose-300' : 'border-b border-slate-800/60 text-slate-300'}">
+                            <div class="flex justify-between items-center py-2 px-3 rounded-xl ${isWinner ? 'bg-amber-500/15 border border-amber-500/40 font-bold text-amber-300' : 'border-b border-slate-800/60 text-slate-300'}">
                                 <span class="flex items-center gap-2">
-                                    <span class="text-slate-400 font-semibold">#${idx + 1}</span>
+                                    <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${isWinner ? 'bg-amber-400 text-slate-950' : 'bg-slate-800 text-slate-400'}">#${idx + 1}</span>
                                     <span class="w-5 h-5 rounded-md ${c.bg} ${c.text} border ${c.border} font-bold flex items-center justify-center text-[10px]">${escapeHtml(getPlayerInitial(p.name))}</span>
                                     <span class="w-2 h-2 rounded-full ${c.dot}"></span>
                                     <span>${escapeHtml(p.name)}</span>
+                                    ${isWinner ? '<i class="fa-solid fa-crown text-amber-400 text-xs"></i>' : ''}
                                 </span>
-                                <span class="font-mono">${p.score} pts</span>
+                                <span class="font-mono ${crossed500 ? 'text-rose-400 font-black' : isWinner ? 'text-amber-300 font-black' : 'text-slate-300'}">${p.score} pts</span>
                             </div>
                         `;
                     }).join('');
@@ -1168,7 +1172,7 @@
             const rosterEl = document.getElementById('uno-editable-roster');
             if (!rosterEl) return;
             rosterEl.innerHTML = '';
-            const sorted = [...unoInPersonState.players].sort((a, b) => b.score - a.score);
+            const sorted = [...unoInPersonState.players].sort((a, b) => a.score - b.score);
             sorted.forEach((p, idx) => {
                 const color = getPlayerColor(p, idx);
                 const stagedPts = getUnoPlayerStagedTotal(p.id);
@@ -1195,7 +1199,7 @@
                                 : 'bg-slate-900 text-slate-500 border border-slate-800'
                         }">+${stagedPts} pending</span>
                         <div>
-                            <span class="font-black text-base ${p.score >= 500 ? 'text-amber-400' : 'text-rose-400'}">${p.score}</span>
+                            <span class="font-black text-base ${p.score >= 500 ? 'text-rose-500' : idx === 0 ? 'text-emerald-400' : 'text-rose-400'}">${p.score}</span>
                             <span class="text-xs text-slate-400">pts</span>
                         </div>
                     </div>
