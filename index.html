@@ -153,11 +153,16 @@
         <section id="view-uno-inperson" class="game-view hidden">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                 <div>
-                    <h2 class="text-3xl font-extrabold text-white game-font flex items-center space-x-2.5">
-                        <span class="w-4 h-4 rounded-full bg-rose-500 inline-block"></span>
-                        <span>Uno Table Scorekeeper</span>
-                    </h2>
-                    <p class="text-slate-400 text-sm">Each player has a distinct color badge & dot. Tally leftover cards or enter round points to race to 500.</p>
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-3xl font-extrabold text-white game-font flex items-center space-x-2.5">
+                            <span class="w-4 h-4 rounded-full bg-rose-500 inline-block"></span>
+                            <span>Uno Table Scorekeeper</span>
+                        </h2>
+                        <span id="uno-round-badge" class="bg-rose-950/80 border border-rose-700/50 text-rose-300 text-xs font-bold px-3 py-1 rounded-full">
+                            Round 1
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-1">Click through each player to add their points for this round, then click <strong class="text-slate-200">Save Round Points</strong> (players with none get +0).</p>
                 </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="resetUnoInPerson()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-2 rounded-xl text-xs border border-slate-700 transition">
@@ -170,17 +175,17 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <!-- Left: Card Keypad & Direct Points Entry -->
+                <!-- Left: Card Keypad & Staged Round Points Entry -->
                 <div class="lg:col-span-6 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-2xl">
                     <div class="flex flex-wrap justify-between items-center gap-2 mb-1">
-                        <h3 class="text-lg font-bold text-white game-font">Round Points Calculator</h3>
+                        <h3 class="text-lg font-bold text-white game-font">Round Points Stager</h3>
                         <div id="uno-active-scorer-label" class="flex items-center gap-1.5 text-xs font-bold text-rose-300 bg-slate-950/80 border border-slate-800 px-3 py-1 rounded-full">
-                            Scoring: Alice
+                            Staging: Alice
                         </div>
                     </div>
-                    <p class="text-xs text-slate-400 mb-4">Select the round winner and tap cards or type direct points.</p>
+                    <p class="text-xs text-slate-400 mb-4">Select a player below and tap cards or enter points to stage for this round.</p>
 
-                    <!-- Player Selector Pills -->
+                    <!-- Player Selector Pills (Shows each player's staged round pts) -->
                     <div class="flex flex-wrap gap-2 mb-4" id="uno-player-selector-pills"></div>
 
                     <!-- Card Keypad -->
@@ -215,33 +220,43 @@
                             </button>
                         </div>
 
-                        <!-- Direct Manual Points Entry -->
+                        <!-- Direct Manual Points Entry for Active Player -->
                         <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-3">
-                            <label for="uno-manual-pts-input" class="text-xs text-slate-400 font-semibold">Or enter manual round points:</label>
+                            <label for="uno-manual-pts-input" class="text-xs text-slate-400 font-semibold">Manual points for selected player:</label>
                             <div class="flex items-center gap-2">
-                                <input type="number" id="uno-manual-pts-input" min="0" placeholder="0" oninput="renderUnoDraftTotal()" class="w-24 bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-sm font-bold text-white text-center focus:border-rose-500 focus:outline-none">
+                                <input type="number" id="uno-manual-pts-input" min="0" placeholder="0" oninput="unoUpdateManualPts(this.value)" class="w-24 bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-sm font-bold text-white text-center focus:border-rose-500 focus:outline-none">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Draft Breakdown -->
-                    <div class="bg-slate-950/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between min-h-[135px]">
+                    <!-- Active Player Staged Breakdown + Save Round Button -->
+                    <div class="bg-slate-950/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between min-h-[145px]">
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-semibold text-slate-300">Tapped Cards (<span id="uno-hand-count">0</span>)</span>
-                            <button onclick="unoClearHandDraft()" class="text-xs text-slate-500 hover:text-rose-400 transition">Clear</button>
+                            <span class="text-xs font-semibold text-slate-300">
+                                <span id="uno-active-cards-owner">Alice</span>'s Staged Cards (<span id="uno-hand-count">0</span>)
+                            </span>
+                            <div class="flex items-center gap-3">
+                                <button onclick="unoClearActivePlayerDraft()" class="text-xs text-slate-400 hover:text-rose-400 transition">Clear Player</button>
+                                <button onclick="unoClearAllRoundDrafts()" class="text-xs text-slate-500 hover:text-rose-400 transition">Clear All</button>
+                            </div>
                         </div>
                         <div id="uno-hand-tags" class="flex flex-wrap gap-1.5 min-h-[36px] items-center">
-                            <span class="text-xs text-slate-500 italic">Tap cards above or enter manual points.</span>
+                            <span class="text-xs text-slate-500 italic">Tap cards above or enter manual points for this player.</span>
                         </div>
-                        <div class="border-t border-slate-800 pt-3 mt-3 flex justify-between items-center">
+                        <div class="border-t border-slate-800 pt-3 mt-3 flex flex-wrap justify-between items-center gap-2">
                             <div>
-                                <span class="text-xs text-slate-400">Round Total:</span>
+                                <span class="text-xs text-slate-400">Player Staged:</span>
                                 <span id="uno-draft-total-pts" class="text-2xl font-black text-rose-400 ml-1">0</span>
                                 <span class="text-xs text-slate-400">pts</span>
                             </div>
-                            <button onclick="unoCommitHandScore()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-rose-600/30 flex items-center gap-1.5">
-                                <i class="fa-solid fa-check"></i> Add Round Points
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <button onclick="unoNextPlayer()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-3.5 py-2.5 rounded-xl text-xs border border-slate-700 transition flex items-center gap-1.5" title="Switch to next player">
+                                    <span>Next Player</span> <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                                <button onclick="unoSaveRoundPoints()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-rose-600/30 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-check-double"></i> Save Round Points
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -256,18 +271,18 @@
                             </span>
                         </div>
 
-                        <!-- Editable Roster -->
+                        <!-- Editable Roster (Shows Pending +pts badge alongside Total Score) -->
                         <div class="space-y-2 mb-6" id="uno-editable-roster"></div>
 
                         <!-- Round Logs -->
                         <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Recent Round History</h4>
-                        <div id="uno-round-log" class="space-y-1.5 max-h-[160px] overflow-y-auto pr-1 text-xs text-slate-300">
+                        <div id="uno-round-log" class="space-y-1.5 max-h-[180px] overflow-y-auto pr-1 text-xs text-slate-300">
                             <div class="text-slate-500 italic">No rounds recorded yet.</div>
                         </div>
                     </div>
 
                     <div class="pt-4 border-t border-slate-800 text-center">
-                        <p class="text-[11px] text-slate-500">First player to reach 500 points wins the Uno match!</p>
+                        <p class="text-[11px] text-slate-500">Click each player to stage their round points. Unstaged players receive +0 when you click Save Round Points.</p>
                     </div>
                 </div>
             </div>
@@ -862,14 +877,38 @@
                 { id: 'u3', name: 'Charlie', score: 0, rounds: 0, colorIndex: 2 }
             ],
             activePlayerId: 'u1',
-            draftCards: [],
+            round: 1,
+            // Per-player staged round entries: { [playerId]: { cards: [{pts, label}], manualPts: 0 } }
+            stagedByPlayer: {
+                u1: { cards: [], manualPts: 0 },
+                u2: { cards: [], manualPts: 0 },
+                u3: { cards: [], manualPts: 0 }
+            },
             roundsHistory: [],
             victoryShown: false
         };
 
+        function ensureUnoPlayerDraft(playerId) {
+            if (!unoInPersonState.stagedByPlayer[playerId]) {
+                unoInPersonState.stagedByPlayer[playerId] = { cards: [], manualPts: 0 };
+            }
+            return unoInPersonState.stagedByPlayer[playerId];
+        }
+
+        function getUnoPlayerStagedTotal(playerId) {
+            const draft = ensureUnoPlayerDraft(playerId);
+            const cardsSum = draft.cards.reduce((acc, c) => acc + c.pts, 0);
+            const manual = parseInt(draft.manualPts, 10) || 0;
+            return cardsSum + manual;
+        }
+
         function resetUnoInPerson() {
-            unoInPersonState.players.forEach(p => { p.score = 0; p.rounds = 0; });
-            unoInPersonState.draftCards = [];
+            unoInPersonState.players.forEach(p => {
+                p.score = 0;
+                p.rounds = 0;
+                unoInPersonState.stagedByPlayer[p.id] = { cards: [], manualPts: 0 };
+            });
+            unoInPersonState.round = 1;
             unoInPersonState.roundsHistory = [];
             unoInPersonState.victoryShown = false;
             const manualInput = document.getElementById('uno-manual-pts-input');
@@ -893,7 +932,15 @@
 
         function unoSelectScorer(playerId) {
             unoInPersonState.activePlayerId = playerId;
+            ensureUnoPlayerDraft(playerId);
             renderUnoInPerson();
+        }
+
+        function unoNextPlayer() {
+            if (unoInPersonState.players.length === 0) return;
+            const currentIndex = unoInPersonState.players.findIndex(p => p.id === unoInPersonState.activePlayerId);
+            const nextIndex = (currentIndex + 1) % unoInPersonState.players.length;
+            unoSelectScorer(unoInPersonState.players[nextIndex].id);
         }
 
         function updateUnoPlayerNameLive(id, newName) {
@@ -914,6 +961,7 @@
                 return;
             }
             unoInPersonState.players = unoInPersonState.players.filter(p => p.id !== id);
+            delete unoInPersonState.stagedByPlayer[id];
             if (!unoInPersonState.players.some(p => p.id === unoInPersonState.activePlayerId)) {
                 unoInPersonState.activePlayerId = unoInPersonState.players[0].id;
             }
@@ -921,47 +969,71 @@
         }
 
         function unoAddKeypadCard(pts, label = '') {
-            unoInPersonState.draftCards.push({ pts, label: label || `${pts}` });
+            const draft = ensureUnoPlayerDraft(unoInPersonState.activePlayerId);
+            draft.cards.push({ pts, label: label || `${pts}` });
             renderUnoInPerson();
         }
 
-        function unoClearHandDraft() {
-            unoInPersonState.draftCards = [];
+        function unoUpdateManualPts(rawValue) {
+            const draft = ensureUnoPlayerDraft(unoInPersonState.activePlayerId);
+            const parsed = parseInt(rawValue, 10);
+            draft.manualPts = isNaN(parsed) || parsed < 0 ? 0 : parsed;
+            renderUnoPillsAndLabel();
+            renderUnoRosterOnly();
+            const totalEl = document.getElementById('uno-draft-total-pts');
+            if (totalEl) totalEl.innerText = getUnoPlayerStagedTotal(unoInPersonState.activePlayerId);
+        }
+
+        function unoClearActivePlayerDraft() {
+            const activeId = unoInPersonState.activePlayerId;
+            unoInPersonState.stagedByPlayer[activeId] = { cards: [], manualPts: 0 };
             const manualInput = document.getElementById('uno-manual-pts-input');
             if (manualInput) manualInput.value = '';
             renderUnoInPerson();
         }
 
+        function unoClearAllRoundDrafts() {
+            unoInPersonState.players.forEach(p => {
+                unoInPersonState.stagedByPlayer[p.id] = { cards: [], manualPts: 0 };
+            });
+            const manualInput = document.getElementById('uno-manual-pts-input');
+            if (manualInput) manualInput.value = '';
+            renderUnoInPerson();
+            showToast("Cleared staged points for all players.", "fa-eraser");
+        }
+
         function unoRemoveDraftCard(index) {
-            unoInPersonState.draftCards.splice(index, 1);
+            const draft = ensureUnoPlayerDraft(unoInPersonState.activePlayerId);
+            draft.cards.splice(index, 1);
             renderUnoInPerson();
         }
 
-        function renderUnoDraftTotal() {
-            const keypadSum = unoInPersonState.draftCards.reduce((acc, c) => acc + c.pts, 0);
-            const manualVal = parseInt(document.getElementById('uno-manual-pts-input')?.value || 0, 10) || 0;
-            const totalEl = document.getElementById('uno-draft-total-pts');
-            if (totalEl) totalEl.innerText = keypadSum + manualVal;
-            return keypadSum + manualVal;
-        }
+        function unoSaveRoundPoints() {
+            if (unoInPersonState.players.length === 0) return;
 
-        function unoCommitHandScore() {
-            const playerIdx = unoInPersonState.players.findIndex(p => p.id === unoInPersonState.activePlayerId);
-            const player = unoInPersonState.players[playerIdx];
-            if (!player) return;
-
-            const totalHandPts = renderUnoDraftTotal();
-            player.score += totalHandPts;
-            player.rounds += 1;
-
-            unoInPersonState.roundsHistory.unshift({
-                playerName: player.name,
-                colorIndex: player.colorIndex ?? playerIdx,
-                points: totalHandPts,
-                cardsCount: unoInPersonState.draftCards.length
+            const roundEntries = [];
+            unoInPersonState.players.forEach((p, idx) => {
+                const stagedPts = getUnoPlayerStagedTotal(p.id);
+                const draft = ensureUnoPlayerDraft(p.id);
+                p.score += stagedPts;
+                p.rounds += 1;
+                roundEntries.push({
+                    playerId: p.id,
+                    playerName: p.name,
+                    colorIndex: p.colorIndex ?? idx,
+                    points: stagedPts,
+                    cardsCount: draft.cards.length
+                });
+                // Reset player's staged points for next round
+                unoInPersonState.stagedByPlayer[p.id] = { cards: [], manualPts: 0 };
             });
 
-            unoInPersonState.draftCards = [];
+            unoInPersonState.roundsHistory.unshift({
+                roundNum: unoInPersonState.round,
+                entries: roundEntries
+            });
+            unoInPersonState.round += 1;
+
             const manualInput = document.getElementById('uno-manual-pts-input');
             if (manualInput) manualInput.value = '';
 
@@ -1008,7 +1080,7 @@
                     modal.classList.add('flex');
                 }
             } else {
-                showToast(`Added ${totalHandPts} points to ${player.name}!`, "fa-check");
+                showToast(`Saved Round ${unoInPersonState.round - 1} points for all players!`, "fa-check-double");
             }
         }
 
@@ -1019,6 +1091,7 @@
                 unoInPersonState.players.forEach((p, idx) => {
                     const isActive = p.id === unoInPersonState.activePlayerId;
                     const color = getPlayerColor(p, idx);
+                    const stagedPts = getUnoPlayerStagedTotal(p.id);
                     const pill = document.createElement('button');
                     pill.onclick = () => unoSelectScorer(p.id);
                     pill.className = `px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 border ${
@@ -1030,7 +1103,11 @@
                         <span class="w-5 h-5 rounded-md ${color.bg} ${color.text} border ${color.border} font-extrabold flex items-center justify-center text-[10px]">${escapeHtml(getPlayerInitial(p.name))}</span>
                         <span class="w-2 h-2 rounded-full ${color.dot}"></span>
                         <span>${escapeHtml(p.name)}</span>
-                        <span class="text-[10px] opacity-75">(${p.score})</span>
+                        <span class="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold ${
+                            stagedPts > 0
+                                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                                : 'bg-slate-800 text-slate-400'
+                        }">+${stagedPts}</span>
                     `;
                     pillsContainer.appendChild(pill);
                 });
@@ -1042,21 +1119,76 @@
                 const color = getPlayerColor(activeP, activeIdx);
                 labelEl.innerHTML = `
                     <span class="w-2 h-2 rounded-full ${color.dot}"></span>
-                    <span class="${color.text}">Scoring: ${escapeHtml(activeP.name)}</span>
+                    <span class="${color.text}">Staging: ${escapeHtml(activeP.name)}</span>
                 `;
+            }
+            const ownerEl = document.getElementById('uno-active-cards-owner');
+            if (ownerEl && activeP) {
+                ownerEl.textContent = activeP.name;
             }
         }
 
+        function renderUnoRosterOnly() {
+            const rosterEl = document.getElementById('uno-editable-roster');
+            if (!rosterEl) return;
+            rosterEl.innerHTML = '';
+            const sorted = [...unoInPersonState.players].sort((a, b) => b.score - a.score);
+            sorted.forEach((p, idx) => {
+                const color = getPlayerColor(p, idx);
+                const stagedPts = getUnoPlayerStagedTotal(p.id);
+                const isSelected = p.id === unoInPersonState.activePlayerId;
+                const row = document.createElement('div');
+                row.className = `bg-slate-950/70 border rounded-2xl px-3.5 py-2.5 flex items-center justify-between gap-2 transition ${
+                    isSelected ? `${color.border} bg-slate-900/90` : 'border-slate-800/80'
+                }`;
+                row.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <button onclick="unoSelectScorer('${p.id}')" title="Select player to stage points" class="flex items-center gap-2 focus:outline-none">
+                            <span id="uno-avatar-${p.id}" class="w-7 h-7 rounded-lg ${color.bg} ${color.text} border ${color.border} font-extrabold flex items-center justify-center text-xs shrink-0">
+                                ${escapeHtml(getPlayerInitial(p.name))}
+                            </span>
+                            <span class="w-2.5 h-2.5 rounded-full ${color.dot} shrink-0"></span>
+                        </button>
+                        <input type="text" value="${escapeHtml(p.name)}" oninput="updateUnoPlayerNameLive('${p.id}', this.value)" class="bg-slate-900 border border-slate-700 focus:border-rose-500 rounded-lg px-2.5 py-1 text-sm font-bold text-white focus:outline-none w-28 sm:w-36">
+                        <button onclick="removeUnoPlayer('${p.id}')" title="Remove Player" class="text-slate-500 hover:text-rose-400 p-1 transition"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                    </div>
+                    <div class="flex items-center gap-2 text-right">
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                            stagedPts > 0
+                                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                                : 'bg-slate-900 text-slate-500 border border-slate-800'
+                        }">+${stagedPts} pending</span>
+                        <div>
+                            <span class="font-black text-base ${p.score >= 500 ? 'text-amber-400' : 'text-rose-400'}">${p.score}</span>
+                            <span class="text-xs text-slate-400">pts</span>
+                        </div>
+                    </div>
+                `;
+                rosterEl.appendChild(row);
+            });
+        }
+
         function renderUnoInPerson() {
+            const roundBadge = document.getElementById('uno-round-badge');
+            if (roundBadge) roundBadge.innerText = `Round ${unoInPersonState.round}`;
+
             renderUnoPillsAndLabel();
+
+            const activeId = unoInPersonState.activePlayerId;
+            const activeDraft = ensureUnoPlayerDraft(activeId);
+
+            const manualInput = document.getElementById('uno-manual-pts-input');
+            if (manualInput && document.activeElement !== manualInput) {
+                manualInput.value = activeDraft.manualPts > 0 ? activeDraft.manualPts : '';
+            }
 
             const tagsContainer = document.getElementById('uno-hand-tags');
             if (tagsContainer) {
                 tagsContainer.innerHTML = '';
-                if (unoInPersonState.draftCards.length === 0) {
-                    tagsContainer.innerHTML = `<span class="text-xs text-slate-500 italic">Tap cards above or enter manual points.</span>`;
+                if (activeDraft.cards.length === 0) {
+                    tagsContainer.innerHTML = `<span class="text-xs text-slate-500 italic">Tap cards above or enter manual points for this player.</span>`;
                 } else {
-                    unoInPersonState.draftCards.forEach((c, idx) => {
+                    activeDraft.cards.forEach((c, idx) => {
                         const tag = document.createElement('span');
                         tag.className = "bg-slate-800 border border-slate-700 text-slate-200 px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center space-x-1";
                         tag.innerHTML = `<span>${escapeHtml(c.label)} (+${c.pts})</span><button onclick="unoRemoveDraftCard(${idx})" class="text-rose-400 hover:text-rose-300 ml-1">×</button>`;
@@ -1066,49 +1198,31 @@
             }
 
             const countEl = document.getElementById('uno-hand-count');
-            if (countEl) countEl.innerText = unoInPersonState.draftCards.length;
-            renderUnoDraftTotal();
+            if (countEl) countEl.innerText = activeDraft.cards.length;
 
-            const rosterEl = document.getElementById('uno-editable-roster');
-            if (rosterEl) {
-                rosterEl.innerHTML = '';
-                const sorted = [...unoInPersonState.players].sort((a, b) => b.score - a.score);
-                sorted.forEach((p, idx) => {
-                    const color = getPlayerColor(p, idx);
-                    const row = document.createElement('div');
-                    row.className = "bg-slate-950/70 border border-slate-800/80 rounded-2xl px-3.5 py-2.5 flex items-center justify-between gap-2";
-                    row.innerHTML = `
-                        <div class="flex items-center gap-2">
-                            <span id="uno-avatar-${p.id}" class="w-7 h-7 rounded-lg ${color.bg} ${color.text} border ${color.border} font-extrabold flex items-center justify-center text-xs shrink-0">
-                                ${escapeHtml(getPlayerInitial(p.name))}
-                            </span>
-                            <span class="w-2.5 h-2.5 rounded-full ${color.dot} shrink-0"></span>
-                            <input type="text" value="${escapeHtml(p.name)}" oninput="updateUnoPlayerNameLive('${p.id}', this.value)" class="bg-slate-900 border border-slate-700 focus:border-rose-500 rounded-lg px-2.5 py-1 text-sm font-bold text-white focus:outline-none w-32 sm:w-40">
-                            <button onclick="removeUnoPlayer('${p.id}')" title="Remove Player" class="text-slate-500 hover:text-rose-400 p-1 transition"><i class="fa-solid fa-trash-can text-xs"></i></button>
-                        </div>
-                        <div class="text-right">
-                            <span class="font-black text-base ${p.score >= 500 ? 'text-amber-400' : 'text-rose-400'}">${p.score}</span>
-                            <span class="text-xs text-slate-400">pts</span>
-                        </div>
-                    `;
-                    rosterEl.appendChild(row);
-                });
-            }
+            const totalEl = document.getElementById('uno-draft-total-pts');
+            if (totalEl) totalEl.innerText = getUnoPlayerStagedTotal(activeId);
+
+            renderUnoRosterOnly();
 
             const logEl = document.getElementById('uno-round-log');
             if (logEl) {
                 if (unoInPersonState.roundsHistory.length === 0) {
                     logEl.innerHTML = `<div class="text-slate-500 italic">No rounds recorded yet.</div>`;
                 } else {
-                    logEl.innerHTML = unoInPersonState.roundsHistory.map((r, idx) => {
-                        const color = getPlayerColor(r, idx);
+                    logEl.innerHTML = unoInPersonState.roundsHistory.map((r) => {
+                        const badges = (r.entries || []).map((entry, idx) => {
+                            const color = getPlayerColor(entry, idx);
+                            return `<span class="inline-flex items-center gap-1 bg-slate-950/80 border border-slate-800 px-2 py-0.5 rounded-md">
+                                <span class="w-2 h-2 rounded-full ${color.dot}"></span>
+                                <span class="text-slate-300">${escapeHtml(entry.playerName)}:</span>
+                                <span class="font-bold ${entry.points > 0 ? 'text-rose-400' : 'text-slate-500'}">+${entry.points}</span>
+                            </span>`;
+                        }).join(' ');
                         return `
-                            <div class="flex justify-between items-center py-1.5 border-b border-slate-800/40">
-                                <span class="flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full ${color.dot}"></span>
-                                    <span>${escapeHtml(r.playerName)}${r.cardsCount > 0 ? ` (${r.cardsCount} cards)` : ''}</span>
-                                </span>
-                                <span class="font-bold text-rose-400">+${r.points} pts</span>
+                            <div class="py-2 border-b border-slate-800/40 flex flex-col gap-1">
+                                <span class="font-semibold text-slate-300">Round #${r.roundNum}</span>
+                                <div class="flex flex-wrap gap-1.5">${badges}</div>
                             </div>
                         `;
                     }).join('');
@@ -2081,6 +2195,7 @@
             if (modalTargetGame === 'uno') {
                 const colorIndex = getNextUnusedColorIndex(unoInPersonState.players);
                 unoInPersonState.players.push({ id: newId, name, score: 0, rounds: 0, colorIndex });
+                unoInPersonState.stagedByPlayer[newId] = { cards: [], manualPts: 0 };
                 renderUnoInPerson();
             } else if (modalTargetGame === 'hearts') {
                 const colorIndex = getNextUnusedColorIndex(heartsInPersonState.players);
