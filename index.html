@@ -40,20 +40,20 @@
                         🎲
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-amber-300 via-rose-300 to-indigo-300 game-font">
-                            Arcade Lounge
+                        <h1 class="text-lg sm:text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-amber-300 via-rose-300 to-indigo-300 game-font">
+                            Classic Games Web Arcade
                         </h1>
-                        <p class="text-[11px] text-slate-400 font-medium">In-Person Table Scorekeeper</p>
+                        <p class="text-[11px] text-slate-400 font-medium">In-Person Table Scorer</p>
                     </div>
                 </button>
             </div>
 
-            <!-- Quick Game Switcher Pills + Back to Hub Button -->
+            <!-- Quick Game Switcher Pills -->
             <nav class="flex items-center flex-wrap gap-2">
                 <button id="nav-hub" onclick="switchGame('hub')"
                     class="nav-btn px-3.5 py-2 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-200 flex items-center space-x-1.5 bg-slate-800/90 text-slate-300 hover:bg-indigo-600 hover:text-white border border-slate-700 hover:border-indigo-400">
-                    <i class="fa-solid fa-grid-2 text-xs text-indigo-400"></i>
-                    <span>Arcade Hub</span>
+                    <i class="fa-solid fa-table-cells-large text-xs text-indigo-400"></i>
+                    <span>Hub</span>
                 </button>
 
                 <button id="nav-uno" onclick="switchGame('uno')"
@@ -115,7 +115,7 @@
                         🎴
                     </div>
                     <h3 class="text-2xl font-bold text-white game-font mb-2">Uno</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed">Edit player names, tap leftover cards or enter round totals, and race to 500 points.</p>
+                    <p class="text-sm text-slate-400 leading-relaxed">Color-coded players, tap leftover cards or enter round totals, and race to 500 points.</p>
                 </div>
 
                 <!-- HEARTS Card -->
@@ -133,7 +133,7 @@
                         ♠️
                     </div>
                     <h3 class="text-2xl font-bold text-white game-font mb-2">Spades</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed">Log team or solo contracts, Nil & Blind Double Nil bids, bags, and 500-pt victory.</p>
+                    <p class="text-sm text-slate-400 leading-relaxed">Log team contracts, Nil & Blind Double Nil bids, sandbags, and 500-pt victory.</p>
                 </div>
 
                 <!-- YAHTZEE Card -->
@@ -157,7 +157,7 @@
                         <span class="w-4 h-4 rounded-full bg-rose-500 inline-block"></span>
                         <span>Uno Table Scorekeeper</span>
                     </h2>
-                    <p class="text-slate-400 text-sm">Rename players inline, tally leftover cards or enter direct round points, and track the race to 500.</p>
+                    <p class="text-slate-400 text-sm">Each player has a distinct color badge & dot. Tally leftover cards or enter round points to race to 500.</p>
                 </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="resetUnoInPerson()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-2 rounded-xl text-xs border border-slate-700 transition">
@@ -172,11 +172,13 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <!-- Left: Card Keypad & Direct Points Entry -->
                 <div class="lg:col-span-6 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-2xl">
-                    <div class="flex justify-between items-center mb-1">
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-1">
                         <h3 class="text-lg font-bold text-white game-font">Round Points Calculator</h3>
-                        <span class="text-xs font-semibold text-rose-400" id="uno-active-scorer-label">Scoring: Alice</span>
+                        <div id="uno-active-scorer-label" class="flex items-center gap-1.5 text-xs font-bold text-rose-300 bg-slate-950/80 border border-slate-800 px-3 py-1 rounded-full">
+                            Scoring: Alice
+                        </div>
                     </div>
-                    <p class="text-xs text-slate-400 mb-4">Select the round winner (or hand holder) and tap cards or type direct points.</p>
+                    <p class="text-xs text-slate-400 mb-4">Select the round winner and tap cards or type direct points.</p>
 
                     <!-- Player Selector Pills -->
                     <div class="flex flex-wrap gap-2 mb-4" id="uno-player-selector-pills"></div>
@@ -205,7 +207,7 @@
                             <button onclick="unoAddKeypadCard(20, 'Reverse')" class="bg-amber-900/60 hover:bg-amber-800/80 border border-amber-600/40 text-amber-200 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
                                 <i class="fa-solid fa-arrows-rotate"></i> Rev (+20)
                             </button>
-                            <button onclick="unoAddKeypadCard(20, 'Draw 2')" class="bg-emerald-900/60 hover:bg-emerald-800/80 border border-emerald-600/40 text-emerald-200 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                            <button onclick="unoAddKeypadCard(20, 'Draw Two')" class="bg-emerald-900/60 hover:bg-emerald-800/80 border border-emerald-600/40 text-emerald-200 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
                                 <i class="fa-solid fa-plus"></i> Draw 2 (+20)
                             </button>
                             <button onclick="unoAddKeypadCard(50, 'Wild / +4')" class="bg-purple-900/60 hover:bg-purple-800/80 border border-purple-600/40 text-purple-200 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
@@ -273,12 +275,10 @@
             <!-- Uno 500-Point Victory Modal -->
             <div id="uno-inperson-victory-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden items-center justify-center p-4">
                 <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center">
-                    <div class="inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2 bg-rose-500/10 text-rose-400 border border-rose-500/30">
+                    <div class="inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 bg-rose-500/10 text-rose-400 border border-rose-500/30">
                         🏆 Uno Match Winner • 500+ Points
                     </div>
-                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white game-font mb-1">
-                        <span id="uno-victory-winner-name">Player</span> Wins!
-                    </h3>
+                    <div id="uno-victory-winner-badge" class="flex items-center justify-center gap-2.5 mb-1"></div>
                     <p class="text-xs text-slate-400 mb-6">
                         Reached <span id="uno-victory-winner-score" class="text-rose-400 font-bold">500 pts</span> to claim victory!
                     </p>
@@ -313,13 +313,13 @@
                             Round 1
                         </span>
                     </div>
-                    <p class="text-slate-400 text-sm mt-1">Edit player names inline, log Hearts (0–13) and assign the exclusive Queen of Spades (♠Q +13).</p>
+                    <p class="text-slate-400 text-sm mt-1">Each player has a unique colored initial & dot. Log Hearts (0–13) and assign the exclusive Queen of Spades (♠Q +13).</p>
                 </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="resetHeartsInPersonMatch()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-2 rounded-xl text-xs border border-slate-700 transition">
                         <i class="fa-solid fa-rotate-left mr-1"></i> Reset Match
                     </button>
-                    <button onclick="openAddPlayerModal('hearts')" class="bg-red-600 hover:bg-red-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition shadow-lg shadow-red-600/20">
+                    <button onclick="addHeartsPlayer()" class="bg-red-600 hover:bg-red-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition shadow-lg shadow-red-600/20">
                         <i class="fa-solid fa-user-plus mr-1"></i> Add Player
                     </button>
                 </div>
@@ -390,12 +390,12 @@
             <!-- Hearts In-Person Match Victory Modal -->
             <div id="hearts-inperson-victory-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden items-center justify-center p-4">
                 <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative overflow-hidden text-center">
-                    <div class="inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2 bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                    <div class="inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 bg-amber-500/10 text-amber-400 border border-amber-500/30">
                         🏆 Match Over • 100+ Points Reached
                     </div>
-                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white game-font mb-1">
-                        <span id="hearts-victory-winner-name">Player</span> Wins!
-                    </h3>
+                    <div id="hearts-victory-winner-badge" class="flex items-center justify-center gap-2.5 mb-1">
+                        <span id="hearts-victory-winner-name" class="text-2xl sm:text-3xl font-extrabold text-white game-font">Player</span>
+                    </div>
                     <p class="text-xs text-slate-400 mb-5">
                         Winning low score: <span id="hearts-victory-winner-score" class="text-emerald-400 font-bold">0 pts</span>
                     </p>
@@ -429,7 +429,7 @@
                         <i class="fa-solid fa-spa text-emerald-400 text-2xl"></i>
                         <span>Spades Table Scorekeeper</span>
                     </h2>
-                    <p class="text-slate-400 text-sm">Record team contracts, Nil (±100) & Blind Double Nil (±200), bags (10 bags = -100), and race to 500 points.</p>
+                    <p class="text-slate-400 text-sm">Record team contracts, Nil (±100) & Blind Double Nil (±200), sandbags (10 bags = -100), and race to 500 points.</p>
                 </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="resetSpadesInPerson()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-2 rounded-xl text-xs border border-slate-700 transition">
@@ -682,7 +682,7 @@
                     <div class="flex flex-wrap justify-between items-center gap-3 mb-5 pb-4 border-b border-slate-800">
                         <div>
                             <h3 class="text-xl font-bold text-white game-font" id="yatzee-scorecard-title">Scorecard: Player 1</h3>
-                            <p class="text-xs text-slate-400">Click <span class="text-amber-400 font-semibold">Use Roll</span> or enter any score directly.</p>
+                            <p class="text-xs text-slate-400">Click <span class="text-amber-400 font-semibold">Roll</span> or enter any score directly.</p>
                         </div>
                         <div class="bg-amber-500/10 border border-amber-500/30 px-4 py-2 rounded-2xl text-right">
                             <span class="text-[11px] uppercase tracking-wider text-amber-300 font-bold block">Grand Total</span>
@@ -759,7 +759,53 @@
 
     <script>
         // =====================================================================
-        // GLOBAL NAVIGATION & TOAST HELPERS
+        // 1. PLAYER COLOR PALETTE & SAFE HELPER UTILITIES (DEFINED FIRST)
+        // =====================================================================
+        const PLAYER_COLORS = [
+            { name: 'Blue',    bg: 'bg-blue-500/20',    text: 'text-blue-300',    border: 'border-blue-500/50',    dot: 'bg-blue-400',    ring: 'ring-blue-500/40' },
+            { name: 'Rose',    bg: 'bg-rose-500/20',    text: 'text-rose-300',    border: 'border-rose-500/50',    dot: 'bg-rose-400',    ring: 'ring-rose-500/40' },
+            { name: 'Emerald', bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/50', dot: 'bg-emerald-400', ring: 'ring-emerald-500/40' },
+            { name: 'Amber',   bg: 'bg-amber-500/20',   text: 'text-amber-300',   border: 'border-amber-500/50',   dot: 'bg-amber-400',   ring: 'ring-amber-500/40' },
+            { name: 'Violet',  bg: 'bg-violet-500/20',  text: 'text-violet-300',  border: 'border-violet-500/50',  dot: 'bg-violet-400',  ring: 'ring-violet-500/40' },
+            { name: 'Cyan',    bg: 'bg-cyan-500/20',    text: 'text-cyan-300',    border: 'border-cyan-500/50',    dot: 'bg-cyan-400',    ring: 'ring-cyan-500/40' },
+            { name: 'Orange',  bg: 'bg-orange-500/20',  text: 'text-orange-300',  border: 'border-orange-500/50',  dot: 'bg-orange-400',  ring: 'ring-orange-500/40' },
+            { name: 'Pink',    bg: 'bg-pink-500/20',    text: 'text-pink-300',    border: 'border-pink-500/50',    dot: 'bg-pink-400',    ring: 'ring-pink-500/40' },
+            { name: 'Lime',    bg: 'bg-lime-500/20',    text: 'text-lime-300',    border: 'border-lime-500/50',    dot: 'bg-lime-400',    ring: 'ring-lime-500/40' },
+            { name: 'Sky',     bg: 'bg-sky-500/20',     text: 'text-sky-300',     border: 'border-sky-500/50',     dot: 'bg-sky-400',     ring: 'ring-sky-500/40' }
+        ];
+
+        function escapeHtml(str) {
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getPlayerColor(player, fallbackIndex = 0) {
+            const rawIdx = (player && typeof player.colorIndex === 'number' && !isNaN(player.colorIndex))
+                ? player.colorIndex
+                : fallbackIndex;
+            const normalized = ((rawIdx % PLAYER_COLORS.length) + PLAYER_COLORS.length) % PLAYER_COLORS.length;
+            return PLAYER_COLORS[normalized];
+        }
+
+        function getPlayerInitial(name) {
+            const trimmed = String(name ?? '').trim();
+            return trimmed ? trimmed.charAt(0).toUpperCase() : '?';
+        }
+
+        function getNextUnusedColorIndex(players) {
+            const used = new Set((players || []).map(p => p.colorIndex));
+            for (let i = 0; i < PLAYER_COLORS.length; i++) {
+                if (!used.has(i)) return i;
+            }
+            return (players ? players.length : 0) % PLAYER_COLORS.length;
+        }
+
+        // =====================================================================
+        // 2. GLOBAL NAVIGATION & TOAST HELPERS
         // =====================================================================
         let currentGame = 'hearts';
         let toastTimer = null;
@@ -768,7 +814,7 @@
             const banner = document.getElementById('toast-banner');
             const text = document.getElementById('toast-text');
             if (!banner || !text) return;
-            text.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            text.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${escapeHtml(message)}</span>`;
             banner.classList.remove('hidden');
             if (toastTimer) clearTimeout(toastTimer);
             toastTimer = setTimeout(() => hideToast(), 4200);
@@ -807,13 +853,13 @@
         }
 
         // =====================================================================
-        // UNO IN-PERSON TABLE SCOREKEEPER
+        // 3. UNO IN-PERSON TABLE SCOREKEEPER
         // =====================================================================
         const unoInPersonState = {
             players: [
-                { id: 'u1', name: 'Alice', score: 0, rounds: 0 },
-                { id: 'u2', name: 'Bob', score: 0, rounds: 0 },
-                { id: 'u3', name: 'Charlie', score: 0, rounds: 0 }
+                { id: 'u1', name: 'Alice', score: 0, rounds: 0, colorIndex: 0 },
+                { id: 'u2', name: 'Bob', score: 0, rounds: 0, colorIndex: 1 },
+                { id: 'u3', name: 'Charlie', score: 0, rounds: 0, colorIndex: 2 }
             ],
             activePlayerId: 'u1',
             draftCards: [],
@@ -854,6 +900,10 @@
             const p = unoInPersonState.players.find(item => item.id === id);
             if (p) {
                 p.name = newName.trim() || 'Player';
+                const avatar = document.getElementById(`uno-avatar-${id}`);
+                if (avatar) {
+                    avatar.textContent = getPlayerInitial(p.name);
+                }
                 renderUnoPillsAndLabel();
             }
         }
@@ -896,7 +946,8 @@
         }
 
         function unoCommitHandScore() {
-            const player = unoInPersonState.players.find(p => p.id === unoInPersonState.activePlayerId);
+            const playerIdx = unoInPersonState.players.findIndex(p => p.id === unoInPersonState.activePlayerId);
+            const player = unoInPersonState.players[playerIdx];
             if (!player) return;
 
             const totalHandPts = renderUnoDraftTotal();
@@ -905,6 +956,7 @@
 
             unoInPersonState.roundsHistory.unshift({
                 playerName: player.name,
+                colorIndex: player.colorIndex ?? playerIdx,
                 points: totalHandPts,
                 cardsCount: unoInPersonState.draftCards.length
             });
@@ -919,19 +971,37 @@
             if (winner && !unoInPersonState.victoryShown) {
                 unoInPersonState.victoryShown = true;
                 const modal = document.getElementById('uno-inperson-victory-modal');
-                const wName = document.getElementById('uno-victory-winner-name');
+                const wBadge = document.getElementById('uno-victory-winner-badge');
                 const wScore = document.getElementById('uno-victory-winner-score');
                 const listEl = document.getElementById('uno-victory-standings-list');
-                if (wName) wName.innerText = winner.name;
+                const wColor = getPlayerColor(winner, 0);
+
+                if (wBadge) {
+                    wBadge.innerHTML = `
+                        <span class="w-9 h-9 rounded-xl ${wColor.bg} ${wColor.text} border ${wColor.border} font-extrabold flex items-center justify-center text-sm shadow">
+                            ${escapeHtml(getPlayerInitial(winner.name))}
+                        </span>
+                        <span class="w-3 h-3 rounded-full ${wColor.dot}"></span>
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-white game-font">${escapeHtml(winner.name)} Wins!</h3>
+                    `;
+                }
                 if (wScore) wScore.innerText = `${winner.score} pts`;
                 if (listEl) {
                     const sorted = [...unoInPersonState.players].sort((a, b) => b.score - a.score);
-                    listEl.innerHTML = sorted.map((p, idx) => `
-                        <div class="flex justify-between items-center py-2 px-3 rounded-xl ${idx === 0 ? 'bg-rose-500/15 border border-rose-500/30 font-bold text-rose-300' : 'border-b border-slate-800/60 text-slate-300'}">
-                            <span>#${idx + 1} ${p.name}</span>
-                            <span class="font-mono">${p.score} pts</span>
-                        </div>
-                    `).join('');
+                    listEl.innerHTML = sorted.map((p, idx) => {
+                        const c = getPlayerColor(p, idx);
+                        return `
+                            <div class="flex justify-between items-center py-2 px-3 rounded-xl ${idx === 0 ? 'bg-rose-500/15 border border-rose-500/30 font-bold text-rose-300' : 'border-b border-slate-800/60 text-slate-300'}">
+                                <span class="flex items-center gap-2">
+                                    <span class="text-slate-400 font-semibold">#${idx + 1}</span>
+                                    <span class="w-5 h-5 rounded-md ${c.bg} ${c.text} border ${c.border} font-bold flex items-center justify-center text-[10px]">${escapeHtml(getPlayerInitial(p.name))}</span>
+                                    <span class="w-2 h-2 rounded-full ${c.dot}"></span>
+                                    <span>${escapeHtml(p.name)}</span>
+                                </span>
+                                <span class="font-mono">${p.score} pts</span>
+                            </div>
+                        `;
+                    }).join('');
                 }
                 if (modal) {
                     modal.classList.remove('hidden');
@@ -946,20 +1016,35 @@
             const pillsContainer = document.getElementById('uno-player-selector-pills');
             if (pillsContainer) {
                 pillsContainer.innerHTML = '';
-                unoInPersonState.players.forEach(p => {
+                unoInPersonState.players.forEach((p, idx) => {
                     const isActive = p.id === unoInPersonState.activePlayerId;
+                    const color = getPlayerColor(p, idx);
                     const pill = document.createElement('button');
                     pill.onclick = () => unoSelectScorer(p.id);
-                    pill.className = `px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 ${
-                        isActive ? 'bg-rose-600 text-white shadow-md' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                    pill.className = `px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 border ${
+                        isActive
+                            ? `bg-slate-800 text-white ${color.border} ring-2 ${color.ring} shadow-md`
+                            : 'bg-slate-900/90 text-slate-300 border-slate-800 hover:bg-slate-800'
                     }`;
-                    pill.innerHTML = `<span>${p.name}</span><span class="text-[10px] opacity-75">(${p.score} pts)</span>`;
+                    pill.innerHTML = `
+                        <span class="w-5 h-5 rounded-md ${color.bg} ${color.text} border ${color.border} font-extrabold flex items-center justify-center text-[10px]">${escapeHtml(getPlayerInitial(p.name))}</span>
+                        <span class="w-2 h-2 rounded-full ${color.dot}"></span>
+                        <span>${escapeHtml(p.name)}</span>
+                        <span class="text-[10px] opacity-75">(${p.score})</span>
+                    `;
                     pillsContainer.appendChild(pill);
                 });
             }
-            const activeP = unoInPersonState.players.find(p => p.id === unoInPersonState.activePlayerId);
+            const activeIdx = unoInPersonState.players.findIndex(p => p.id === unoInPersonState.activePlayerId);
+            const activeP = unoInPersonState.players[activeIdx];
             const labelEl = document.getElementById('uno-active-scorer-label');
-            if (labelEl) labelEl.innerText = activeP ? `Scoring: ${activeP.name}` : '';
+            if (labelEl && activeP) {
+                const color = getPlayerColor(activeP, activeIdx);
+                labelEl.innerHTML = `
+                    <span class="w-2 h-2 rounded-full ${color.dot}"></span>
+                    <span class="${color.text}">Scoring: ${escapeHtml(activeP.name)}</span>
+                `;
+            }
         }
 
         function renderUnoInPerson() {
@@ -974,7 +1059,7 @@
                     unoInPersonState.draftCards.forEach((c, idx) => {
                         const tag = document.createElement('span');
                         tag.className = "bg-slate-800 border border-slate-700 text-slate-200 px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center space-x-1";
-                        tag.innerHTML = `<span>${c.label} (+${c.pts})</span><button onclick="unoRemoveDraftCard(${idx})" class="text-rose-400 hover:text-rose-300 ml-1">×</button>`;
+                        tag.innerHTML = `<span>${escapeHtml(c.label)} (+${c.pts})</span><button onclick="unoRemoveDraftCard(${idx})" class="text-rose-400 hover:text-rose-300 ml-1">×</button>`;
                         tagsContainer.appendChild(tag);
                     });
                 }
@@ -988,12 +1073,17 @@
             if (rosterEl) {
                 rosterEl.innerHTML = '';
                 const sorted = [...unoInPersonState.players].sort((a, b) => b.score - a.score);
-                sorted.forEach(p => {
+                sorted.forEach((p, idx) => {
+                    const color = getPlayerColor(p, idx);
                     const row = document.createElement('div');
                     row.className = "bg-slate-950/70 border border-slate-800/80 rounded-2xl px-3.5 py-2.5 flex items-center justify-between gap-2";
                     row.innerHTML = `
                         <div class="flex items-center gap-2">
-                            <input type="text" value="${p.name}" oninput="updateUnoPlayerNameLive('${p.id}', this.value)" class="bg-slate-900 border border-slate-700 focus:border-rose-500 rounded-lg px-2.5 py-1 text-sm font-bold text-white focus:outline-none w-32 sm:w-40">
+                            <span id="uno-avatar-${p.id}" class="w-7 h-7 rounded-lg ${color.bg} ${color.text} border ${color.border} font-extrabold flex items-center justify-center text-xs shrink-0">
+                                ${escapeHtml(getPlayerInitial(p.name))}
+                            </span>
+                            <span class="w-2.5 h-2.5 rounded-full ${color.dot} shrink-0"></span>
+                            <input type="text" value="${escapeHtml(p.name)}" oninput="updateUnoPlayerNameLive('${p.id}', this.value)" class="bg-slate-900 border border-slate-700 focus:border-rose-500 rounded-lg px-2.5 py-1 text-sm font-bold text-white focus:outline-none w-32 sm:w-40">
                             <button onclick="removeUnoPlayer('${p.id}')" title="Remove Player" class="text-slate-500 hover:text-rose-400 p-1 transition"><i class="fa-solid fa-trash-can text-xs"></i></button>
                         </div>
                         <div class="text-right">
@@ -1010,25 +1100,31 @@
                 if (unoInPersonState.roundsHistory.length === 0) {
                     logEl.innerHTML = `<div class="text-slate-500 italic">No rounds recorded yet.</div>`;
                 } else {
-                    logEl.innerHTML = unoInPersonState.roundsHistory.map(r => `
-                        <div class="flex justify-between items-center py-1 border-b border-slate-800/40">
-                            <span>${r.playerName}${r.cardsCount > 0 ? ` (${r.cardsCount} cards)` : ''}</span>
-                            <span class="font-bold text-rose-400">+${r.points} pts</span>
-                        </div>
-                    `).join('');
+                    logEl.innerHTML = unoInPersonState.roundsHistory.map((r, idx) => {
+                        const color = getPlayerColor(r, idx);
+                        return `
+                            <div class="flex justify-between items-center py-1.5 border-b border-slate-800/40">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full ${color.dot}"></span>
+                                    <span>${escapeHtml(r.playerName)}${r.cardsCount > 0 ? ` (${r.cardsCount} cards)` : ''}</span>
+                                </span>
+                                <span class="font-bold text-rose-400">+${r.points} pts</span>
+                            </div>
+                        `;
+                    }).join('');
                 }
             }
         }
 
         // =====================================================================
-        // HEARTS IN-PERSON TABLE SCOREKEEPER
+        // 4. HEARTS IN-PERSON TABLE SCOREKEEPER
         // =====================================================================
         const heartsInPersonState = {
             players: [
-                { id: 'h1', name: 'North', score: 0, lastHand: 0 },
-                { id: 'h2', name: 'East', score: 0, lastHand: 0 },
-                { id: 'h3', name: 'South', score: 0, lastHand: 0 },
-                { id: 'h4', name: 'West', score: 0, lastHand: 0 }
+                { id: 'h1', name: 'North', score: 0, lastHand: 0, colorIndex: 0 },
+                { id: 'h2', name: 'East',  score: 0, lastHand: 0, colorIndex: 1 },
+                { id: 'h3', name: 'South', score: 0, lastHand: 0, colorIndex: 2 },
+                { id: 'h4', name: 'West',  score: 0, lastHand: 0, colorIndex: 3 }
             ],
             round: 1,
             roundsHistory: []
@@ -1036,16 +1132,29 @@
 
         let victoryShown = false;
 
+        function addHeartsPlayer() {
+            openAddPlayerModal('hearts');
+        }
+
         function updateHeartsPlayerNameLive(id, newName) {
             const player = heartsInPersonState.players.find(p => p.id === id);
             if (player) {
                 player.name = newName.trim() || 'Player';
                 const avatar = document.getElementById(`hearts-avatar-${id}`);
                 if (avatar) {
-                    avatar.innerText = (player.name.charAt(0) || 'P').toUpperCase();
+                    avatar.textContent = getPlayerInitial(player.name);
                 }
                 renderHeartsScoreboardTable();
             }
+        }
+
+        function adjustHeartsInputCount(id, delta) {
+            const input = document.getElementById(`hearts-h-count-${id}`);
+            if (!input) return;
+            const current = parseInt(input.value, 10) || 0;
+            const next = Math.max(0, Math.min(13, current + delta));
+            input.value = next;
+            validateHeartsSum();
         }
 
         function removeHeartsPlayer(id) {
@@ -1065,11 +1174,17 @@
             tbody.innerHTML = '';
             const sorted = [...heartsInPersonState.players].sort((a, b) => a.score - b.score);
             sorted.forEach((p, idx) => {
+                const color = getPlayerColor(p, idx);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="py-2.5 font-semibold text-white flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full ${p.score >= 100 ? 'bg-rose-500' : idx === 0 ? 'bg-emerald-400' : 'bg-red-400'}"></span>
-                        <span>${p.name}</span>
+                    <td class="py-2.5 font-semibold text-white">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-lg ${color.bg} ${color.text} border ${color.border} font-extrabold flex items-center justify-center text-[11px] shrink-0">
+                                ${escapeHtml(getPlayerInitial(p.name))}
+                            </span>
+                            <span class="w-2.5 h-2.5 rounded-full ${color.dot} shrink-0"></span>
+                            <span>${escapeHtml(p.name)}</span>
+                        </div>
                     </td>
                     <td class="py-2.5 text-center text-slate-400">+${p.lastHand}</td>
                     <td class="py-2.5 text-right font-bold ${p.score >= 100 ? 'text-rose-500 font-black' : 'text-red-400'}">${p.score} pts</td>
@@ -1086,23 +1201,27 @@
             if (!inputsContainer) return;
             inputsContainer.innerHTML = '';
 
-            heartsInPersonState.players.forEach(p => {
+            heartsInPersonState.players.forEach((p, idx) => {
+                const color = getPlayerColor(p, idx);
                 const card = document.createElement('div');
                 card.className = "bg-slate-950/70 border border-slate-800/80 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3";
                 card.innerHTML = `
                     <div class="flex items-center space-x-2.5">
-                        <span id="hearts-avatar-${p.id}" class="w-8 h-8 rounded-xl bg-red-500/10 text-red-400 font-bold flex items-center justify-center text-xs border border-red-500/20 uppercase shadow-sm shrink-0">
-                            ${(p.name || 'P').charAt(0).toUpperCase()}
+                        <span id="hearts-avatar-${p.id}" class="w-9 h-9 rounded-xl ${color.bg} ${color.text} font-extrabold flex items-center justify-center text-sm border ${color.border} uppercase shadow-sm shrink-0">
+                            ${escapeHtml(getPlayerInitial(p.name))}
                         </span>
                         <div>
-                            <div class="flex items-center space-x-1.5">
-                                <input type="text" value="${p.name}" oninput="updateHeartsPlayerNameLive('${p.id}', this.value)" class="bg-slate-900 border border-slate-700 hover:border-slate-500 focus:border-red-500 rounded-lg px-2.5 py-1 text-sm font-bold text-white focus:outline-none w-32 sm:w-36 transition" title="Click to rename player" placeholder="Player Name">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full ${color.dot} shrink-0"></span>
+                                <input type="text" value="${escapeHtml(p.name)}" oninput="updateHeartsPlayerNameLive('${p.id}', this.value)" class="bg-slate-900 border border-slate-700 hover:border-slate-500 focus:border-red-500 rounded-lg px-2.5 py-1 text-sm font-bold text-white focus:outline-none w-32 sm:w-36 transition" title="Click to rename player" placeholder="Player Name">
                                 <button onclick="removeHeartsPlayer('${p.id}')" title="Remove Player" class="text-slate-500 hover:text-red-400 p-1 transition"><i class="fa-solid fa-trash-can text-xs"></i></button>
                             </div>
-                            <div class="text-[11px] text-slate-400 mt-0.5">Total Penalty: <span class="text-red-400 font-bold">${p.score}</span> pts</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5 pl-4">Total Penalty: <span class="text-red-400 font-bold">${p.score}</span> pts</div>
                         </div>
                     </div>
 
+                    <div class="flex flex-wrap items-center gap-2 text-xs">
+                        <div class="flex items-center space-x-1 bg-slate-900/90 border border-slate-800 rounded-xl px-1.5 py-1">
                     <div class="flex flex-wrap items-center gap-2.5 text-xs">
                         <div class="flex items-center space-x-1.5">
                             <label for="hearts-h-count-${p.id}" class="text-slate-400 font-semibold">♥:</label>
@@ -1131,10 +1250,23 @@
                     roundLog.innerHTML = '';
                     heartsInPersonState.roundsHistory.forEach((r, idx) => {
                         const row = document.createElement('div');
-                        row.className = "flex justify-between gap-2 py-1.5 border-b border-slate-800/40";
+                        row.className = "flex flex-col gap-1 py-2 border-b border-slate-800/40";
+                        const badgesHtml = Array.isArray(r.entries)
+                            ? r.entries.map((entry, eIdx) => {
+                                const c = getPlayerColor(entry, eIdx);
+                                return `<span class="inline-flex items-center gap-1 bg-slate-950/80 border border-slate-800 px-2 py-0.5 rounded-md">
+                                    <span class="w-2 h-2 rounded-full ${c.dot}"></span>
+                                    <span class="text-slate-300">${escapeHtml(entry.name)}:</span>
+                                    <span class="font-bold text-red-400">+${entry.pts}</span>
+                                </span>`;
+                            }).join(' ')
+                            : `<span class="text-slate-400">${escapeHtml(r.summary || '')}</span>`;
+
                         row.innerHTML = `
-                            <span class="font-semibold text-slate-300 shrink-0">Hand #${heartsInPersonState.roundsHistory.length - idx}</span>
-                            <span class="text-slate-400 text-right">${r.summary}</span>
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-slate-300">Hand #${heartsInPersonState.roundsHistory.length - idx}</span>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5">${badgesHtml}</div>
                         `;
                         roundLog.appendChild(row);
                     });
@@ -1158,9 +1290,9 @@
                 const qLabel = document.getElementById(`hearts-spade-q-label-${p.id}`);
                 if (qLabel) {
                     if (hasQueen) {
-                        qLabel.className = "flex items-center space-x-1.5 cursor-pointer bg-red-950/80 border border-red-500/80 text-red-300 px-2.5 py-1 rounded-lg ring-1 ring-red-500/50 shadow-sm transition select-none";
+                        qLabel.className = "flex items-center space-x-1.5 cursor-pointer bg-red-950/80 border border-red-500/80 text-red-300 px-2.5 py-1.5 rounded-xl ring-1 ring-red-500/50 shadow-sm transition select-none";
                     } else {
-                        qLabel.className = "flex items-center space-x-1.5 cursor-pointer bg-slate-800/80 hover:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700 text-slate-300 transition select-none";
+                        qLabel.className = "flex items-center space-x-1.5 cursor-pointer bg-slate-800/80 hover:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-700 text-slate-300 transition select-none";
                     }
                 }
             });
@@ -1240,8 +1372,8 @@
                 if (h === 13 && q) moonShooter = p;
             });
 
-            const handSummary = [];
-            heartsInPersonState.players.forEach(p => {
+            const entries = [];
+            heartsInPersonState.players.forEach((p, idx) => {
                 let roundPts = 0;
                 if (moonShooter) {
                     roundPts = (p.id === moonShooter.id) ? 0 : 26;
@@ -1254,10 +1386,10 @@
                 }
                 p.score += roundPts;
                 p.lastHand = roundPts;
-                handSummary.push(`${p.name}: +${roundPts}`);
+                entries.push({ name: p.name, pts: roundPts, colorIndex: p.colorIndex ?? idx });
             });
 
-            heartsInPersonState.roundsHistory.unshift({ summary: handSummary.join(' • ') });
+            heartsInPersonState.roundsHistory.unshift({ entries });
             heartsInPersonState.round += 1;
             renderHeartsInPerson();
 
@@ -1276,18 +1408,28 @@
 
             const sorted = [...heartsInPersonState.players].sort((a, b) => a.score - b.score);
             const winner = sorted[0];
+            const winnerColor = getPlayerColor(winner, 0);
 
-            const winnerNameEl = document.getElementById('hearts-victory-winner-name');
+            const winnerBadgeEl = document.getElementById('hearts-victory-winner-badge');
             const winnerScoreEl = document.getElementById('hearts-victory-winner-score');
             const standingsEl = document.getElementById('hearts-victory-standings-list');
 
-            if (winnerNameEl) winnerNameEl.textContent = winner.name;
+            if (winnerBadgeEl) {
+                winnerBadgeEl.innerHTML = `
+                    <span class="w-9 h-9 rounded-xl ${winnerColor.bg} ${winnerColor.text} border ${winnerColor.border} font-extrabold flex items-center justify-center text-sm shadow">
+                        ${escapeHtml(getPlayerInitial(winner.name))}
+                    </span>
+                    <span class="w-3 h-3 rounded-full ${winnerColor.dot}"></span>
+                    <h3 id="hearts-victory-winner-name" class="text-2xl sm:text-3xl font-extrabold text-white game-font">${escapeHtml(winner.name)} Wins!</h3>
+                `;
+            }
             if (winnerScoreEl) winnerScoreEl.textContent = `${winner.score} pts`;
 
             if (standingsEl) {
                 standingsEl.innerHTML = sorted.map((p, idx) => {
                     const isWinner = idx === 0;
                     const crossed100 = p.score >= 100;
+                    const color = getPlayerColor(p, idx);
                     return `
                         <div class="flex justify-between items-center py-2 px-3 rounded-xl ${
                             isWinner ? 'bg-amber-500/15 border border-amber-500/40 font-bold' : 'border-b border-slate-800/60'
@@ -1296,7 +1438,11 @@
                                 <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
                                     isWinner ? 'bg-amber-400 text-slate-950' : 'bg-slate-800 text-slate-400'
                                 }">#${idx + 1}</span>
-                                <span class="${isWinner ? 'text-amber-300 font-bold' : 'text-slate-200'}">${p.name}</span>
+                                <span class="w-5 h-5 rounded-md ${color.bg} ${color.text} border ${color.border} font-bold flex items-center justify-center text-[10px]">
+                                    ${escapeHtml(getPlayerInitial(p.name))}
+                                </span>
+                                <span class="w-2 h-2 rounded-full ${color.dot}"></span>
+                                <span class="${isWinner ? 'text-amber-300 font-bold' : 'text-slate-200'}">${escapeHtml(p.name)}</span>
                                 ${isWinner ? '<i class="fa-solid fa-crown text-amber-400 text-xs"></i>' : ''}
                             </div>
                             <div class="font-mono ${crossed100 ? 'text-rose-400 font-black' : isWinner ? 'text-amber-300 font-black' : 'text-slate-300'}">
@@ -1338,7 +1484,7 @@
         }
 
         // =====================================================================
-        // SPADES IN-PERSON TABLE SCOREKEEPER
+        // 5. SPADES IN-PERSON TABLE SCOREKEEPER
         // =====================================================================
         const spadesInPersonState = {
             t1Score: 0,
@@ -1627,8 +1773,8 @@
                     historyEl.innerHTML = spadesInPersonState.roundsHistory.map((r, idx) => `
                         <div class="py-1.5 border-b border-slate-800/40 leading-relaxed">
                             <div class="text-[11px] text-slate-400 font-bold mb-0.5">Round ${spadesInPersonState.roundsHistory.length - idx}</div>
-                            <div class="text-emerald-400">${r.t1}</div>
-                            <div class="text-indigo-400">${r.t2}</div>
+                            <div class="text-emerald-400">${escapeHtml(r.t1)}</div>
+                            <div class="text-indigo-400">${escapeHtml(r.t2)}</div>
                         </div>
                     `).join('');
                 }
@@ -1636,7 +1782,7 @@
         }
 
         // =====================================================================
-        // YAHTZEE IN-PERSON TABLE SCOREPAD
+        // 6. YAHTZEE IN-PERSON TABLE SCOREPAD
         // =====================================================================
         const UPPER_CATEGORIES = ["Ones", "Twos", "Threes", "Fours", "Fives", "Sixes"];
         const LOWER_CATEGORIES = [
@@ -1810,7 +1956,7 @@
                 row.innerHTML = `
                     <div class="flex items-center gap-2" onclick="event.stopPropagation()">
                         <button onclick="yatzeeSelectPlayer('${p.id}')" class="w-3 h-3 rounded-full ${isActive ? 'bg-amber-400 ring-2 ring-amber-400/40' : 'bg-slate-700'}" title="Select Scorecard"></button>
-                        <input type="text" value="${p.name}" oninput="updateYatzeePlayerNameLive('${p.id}', this.value)" onfocus="yatzeeSelectPlayer('${p.id}')" class="bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-lg px-2 py-1 text-xs font-bold text-white focus:outline-none w-28 sm:w-32">
+                        <input type="text" value="${escapeHtml(p.name)}" oninput="updateYatzeePlayerNameLive('${p.id}', this.value)" onfocus="yatzeeSelectPlayer('${p.id}')" class="bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-lg px-2 py-1 text-xs font-bold text-white focus:outline-none w-28 sm:w-32">
                         <button onclick="removeYatzeePlayer('${p.id}')" class="text-slate-500 hover:text-red-400 text-xs p-1" title="Remove Player"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                     <span class="font-black text-sm ${isActive ? 'text-amber-400' : 'text-slate-300'}">${stats.grandTotal} pts</span>
@@ -1850,7 +1996,7 @@
                     const row = document.createElement('div');
                     row.className = "flex items-center justify-between gap-2 bg-slate-900/90 border border-slate-800 rounded-xl px-3 py-2";
                     row.innerHTML = `
-                        <span class="font-semibold text-slate-200">${cat}</span>
+                        <span class="font-semibold text-slate-200">${escapeHtml(cat)}</span>
                         <div class="flex items-center gap-2">
                             <button onclick="bankInPersonYatzee('${cat}')" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 transition" title="Fill using current dice helper">
                                 Roll: +${projected}
@@ -1896,7 +2042,7 @@
         }
 
         // =====================================================================
-        // ADD PLAYER MODAL CONTROLLER
+        // 7. ADD PLAYER MODAL CONTROLLER
         // =====================================================================
         let modalTargetGame = 'hearts';
 
@@ -1933,10 +2079,12 @@
             const newId = 'p_' + Math.random().toString(36).substring(2, 8);
 
             if (modalTargetGame === 'uno') {
-                unoInPersonState.players.push({ id: newId, name, score: 0, rounds: 0 });
+                const colorIndex = getNextUnusedColorIndex(unoInPersonState.players);
+                unoInPersonState.players.push({ id: newId, name, score: 0, rounds: 0, colorIndex });
                 renderUnoInPerson();
             } else if (modalTargetGame === 'hearts') {
-                heartsInPersonState.players.push({ id: newId, name, score: 0, lastHand: 0 });
+                const colorIndex = getNextUnusedColorIndex(heartsInPersonState.players);
+                heartsInPersonState.players.push({ id: newId, name, score: 0, lastHand: 0, colorIndex });
                 renderHeartsInPerson();
             } else if (modalTargetGame === 'yatzee') {
                 yatzeeInPersonState.players.push({ id: newId, name, scores: createEmptyYatzeeSheet(), yahtzeeBonuses: 0 });
