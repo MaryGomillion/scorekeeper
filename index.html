@@ -104,9 +104,17 @@
             <h2 class="text-4xl sm:text-5xl font-extrabold text-white game-font mb-4 tracking-tight">
                 Choose Your Table Scorekeeper
             </h2>
-            <p class="text-slate-400 max-w-xl mx-auto mb-10 text-base">
+            <p class="text-slate-400 max-w-xl mx-auto mb-6 text-base">
                 Playing cards or rolling dice around the table? Pick a scorekeeper below to track points, rules, bonuses, and standings automatically.
             </p>
+            <div class="flex flex-wrap items-center justify-center gap-3 mb-10">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-950/50 border border-emerald-700/40 text-emerald-300 text-xs font-medium">
+                    <i class="fa-solid fa-cloud-check"></i> Auto-saves locally across page reloads
+                </span>
+                <button id="btn-clear-saved-data" onclick="handleClearAllSavedData()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-rose-950/70 text-slate-400 hover:text-rose-300 border border-slate-800 hover:border-rose-700/60 text-xs font-semibold transition">
+                    <i class="fa-solid fa-trash-can"></i> <span id="clear-saved-data-label">Clear Saved Data</span>
+                </button>
+            </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
                 <!-- UNO Card -->
@@ -465,14 +473,14 @@
                         <!-- Team 1 -->
                         <div class="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-4">
                             <div class="flex justify-between items-center mb-3 gap-2">
-                                <input type="text" id="spades-t1-name" value="Team 1 (North & South)" oninput="updateSpadesTeamNames()" class="bg-slate-900 border border-slate-700 focus:border-emerald-500 rounded-lg px-2.5 py-1 text-sm font-bold text-emerald-400 focus:outline-none w-52">
+                                <input type="text" id="spades-t1-name" value="Team 1 (North & South)" oninput="updateSpadesTeamNames(); saveArcadeState();" class="bg-slate-900 border border-slate-700 focus:border-emerald-500 rounded-lg px-2.5 py-1 text-sm font-bold text-emerald-400 focus:outline-none w-52">
                                 <span class="text-xs bg-emerald-950 text-emerald-300 border border-emerald-800 px-2.5 py-0.5 rounded-md font-semibold" id="spades-t1-bags-badge">0 Bags</span>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-3">
                                 <div>
                                     <label class="text-slate-400 block mb-1 font-semibold">Partner A Bid:</label>
-                                    <select id="spades-t1-p1-bid" onchange="updateSpadesNilInputs()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-emerald-500">
+                                    <select id="spades-t1-p1-bid" onchange="updateSpadesNilInputs(); saveArcadeState();" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-emerald-500">
                                         <option value="nil">🌟 Nil (±100 pts)</option>
                                         <option value="blind_double_nil">⚡ Blind Double Nil (±200 pts)</option>
                                         <option value="1">1 Trick</option>
@@ -487,7 +495,7 @@
                                 </div>
                                 <div>
                                     <label class="text-slate-400 block mb-1 font-semibold">Partner B Bid:</label>
-                                    <select id="spades-t1-p2-bid" onchange="updateSpadesNilInputs()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-emerald-500">
+                                    <select id="spades-t1-p2-bid" onchange="updateSpadesNilInputs(); saveArcadeState();" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-emerald-500">
                                         <option value="nil">🌟 Nil (±100 pts)</option>
                                         <option value="blind_double_nil">⚡ Blind Double Nil (±200 pts)</option>
                                         <option value="1">1 Trick</option>
@@ -512,21 +520,21 @@
 
                             <div class="text-xs">
                                 <label class="text-slate-400 block mb-1 font-semibold">Total Team Tricks Won:</label>
-                                <input type="number" id="spades-t1-tricks" min="0" max="13" value="5" oninput="syncSpadesTricks(1)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-emerald-500">
+                                <input type="number" id="spades-t1-tricks" min="0" max="13" value="5" oninput="syncSpadesTricks(1); saveArcadeState();" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-emerald-500">
                             </div>
                         </div>
 
                         <!-- Team 2 -->
                         <div class="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-4">
                             <div class="flex justify-between items-center mb-3 gap-2">
-                                <input type="text" id="spades-t2-name" value="Team 2 (East & West)" oninput="updateSpadesTeamNames()" class="bg-slate-900 border border-slate-700 focus:border-indigo-500 rounded-lg px-2.5 py-1 text-sm font-bold text-indigo-400 focus:outline-none w-52">
+                                <input type="text" id="spades-t2-name" value="Team 2 (East & West)" oninput="updateSpadesTeamNames(); saveArcadeState();" class="bg-slate-900 border border-slate-700 focus:border-indigo-500 rounded-lg px-2.5 py-1 text-sm font-bold text-indigo-400 focus:outline-none w-52">
                                 <span class="text-xs bg-indigo-950 text-indigo-300 border border-indigo-800 px-2.5 py-0.5 rounded-md font-semibold" id="spades-t2-bags-badge">0 Bags</span>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-3">
                                 <div>
                                     <label class="text-slate-400 block mb-1 font-semibold">Partner A Bid:</label>
-                                    <select id="spades-t2-p1-bid" onchange="updateSpadesNilInputs()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-indigo-500">
+                                    <select id="spades-t2-p1-bid" onchange="updateSpadesNilInputs(); saveArcadeState();" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-indigo-500">
                                         <option value="nil">🌟 Nil (±100 pts)</option>
                                         <option value="blind_double_nil">⚡ Blind Double Nil (±200 pts)</option>
                                         <option value="1">1 Trick</option>
@@ -541,7 +549,7 @@
                                 </div>
                                 <div>
                                     <label class="text-slate-400 block mb-1 font-semibold">Partner B Bid:</label>
-                                    <select id="spades-t2-p2-bid" onchange="updateSpadesNilInputs()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-indigo-500">
+                                    <select id="spades-t2-p2-bid" onchange="updateSpadesNilInputs(); saveArcadeState();" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-indigo-500">
                                         <option value="nil">🌟 Nil (±100 pts)</option>
                                         <option value="blind_double_nil">⚡ Blind Double Nil (±200 pts)</option>
                                         <option value="1">1 Trick</option>
@@ -566,7 +574,7 @@
 
                             <div class="text-xs">
                                 <label class="text-slate-400 block mb-1 font-semibold">Total Team Tricks Won:</label>
-                                <input type="number" id="spades-t2-tricks" min="0" max="13" value="8" oninput="syncSpadesTricks(2)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-indigo-500">
+                                <input type="number" id="spades-t2-tricks" min="0" max="13" value="8" oninput="syncSpadesTricks(2); saveArcadeState();" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-indigo-500">
                             </div>
                         </div>
                     </div>
@@ -774,19 +782,19 @@
 
     <script>
         // =====================================================================
-        // 1. PLAYER COLOR PALETTE & SAFE HELPER UTILITIES (DEFINED FIRST)
+        // 1. PLAYER COLOR PALETTE & SAFE ESCAPING HELPERS
         // =====================================================================
         const PLAYER_COLORS = [
-            { name: 'Blue',    bg: 'bg-blue-500/20',    text: 'text-blue-300',    border: 'border-blue-500/50',    dot: 'bg-blue-400',    ring: 'ring-blue-500/40' },
-            { name: 'Rose',    bg: 'bg-rose-500/20',    text: 'text-rose-300',    border: 'border-rose-500/50',    dot: 'bg-rose-400',    ring: 'ring-rose-500/40' },
-            { name: 'Emerald', bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/50', dot: 'bg-emerald-400', ring: 'ring-emerald-500/40' },
-            { name: 'Amber',   bg: 'bg-amber-500/20',   text: 'text-amber-300',   border: 'border-amber-500/50',   dot: 'bg-amber-400',   ring: 'ring-amber-500/40' },
-            { name: 'Violet',  bg: 'bg-violet-500/20',  text: 'text-violet-300',  border: 'border-violet-500/50',  dot: 'bg-violet-400',  ring: 'ring-violet-500/40' },
-            { name: 'Cyan',    bg: 'bg-cyan-500/20',    text: 'text-cyan-300',    border: 'border-cyan-500/50',    dot: 'bg-cyan-400',    ring: 'ring-cyan-500/40' },
-            { name: 'Orange',  bg: 'bg-orange-500/20',  text: 'text-orange-300',  border: 'border-orange-500/50',  dot: 'bg-orange-400',  ring: 'ring-orange-500/40' },
-            { name: 'Pink',    bg: 'bg-pink-500/20',    text: 'text-pink-300',    border: 'border-pink-500/50',    dot: 'bg-pink-400',    ring: 'ring-pink-500/40' },
-            { name: 'Lime',    bg: 'bg-lime-500/20',    text: 'text-lime-300',    border: 'border-lime-500/50',    dot: 'bg-lime-400',    ring: 'ring-lime-500/40' },
-            { name: 'Sky',     bg: 'bg-sky-500/20',     text: 'text-sky-300',     border: 'border-sky-500/50',     dot: 'bg-sky-400',     ring: 'ring-sky-500/40' }
+            { bg: 'bg-blue-500/20',    text: 'text-blue-300',    border: 'border-blue-500/50',    dot: 'bg-blue-400',    ring: 'ring-blue-400' },
+            { bg: 'bg-rose-500/20',    text: 'text-rose-300',    border: 'border-rose-500/50',    dot: 'bg-rose-400',    ring: 'ring-rose-400' },
+            { bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/50', dot: 'bg-emerald-400', ring: 'ring-emerald-400' },
+            { bg: 'bg-amber-500/20',   text: 'text-amber-300',   border: 'border-amber-500/50',   dot: 'bg-amber-400',   ring: 'ring-amber-400' },
+            { bg: 'bg-violet-500/20',  text: 'text-violet-300',  border: 'border-violet-500/50',  dot: 'bg-violet-400',  ring: 'ring-violet-400' },
+            { bg: 'bg-cyan-500/20',    text: 'text-cyan-300',    border: 'border-cyan-500/50',    dot: 'bg-cyan-400',    ring: 'ring-cyan-400' },
+            { bg: 'bg-orange-500/20',  text: 'text-orange-300',  border: 'border-orange-500/50',  dot: 'bg-orange-400',  ring: 'ring-orange-400' },
+            { bg: 'bg-pink-500/20',    text: 'text-pink-300',    border: 'border-pink-500/50',    dot: 'bg-pink-400',    ring: 'ring-pink-400' },
+            { bg: 'bg-lime-500/20',    text: 'text-lime-300',    border: 'border-lime-500/50',    dot: 'bg-lime-400',    ring: 'ring-lime-400' },
+            { bg: 'bg-sky-500/20',     text: 'text-sky-300',     border: 'border-sky-500/50',     dot: 'bg-sky-400',     ring: 'ring-sky-400' }
         ];
 
         function escapeHtml(str) {
@@ -820,10 +828,14 @@
         }
 
         // =====================================================================
-        // 2. GLOBAL NAVIGATION & TOAST HELPERS
+        // 2. GLOBAL NAVIGATION, PERSISTENCE & TOAST HELPERS
         // =====================================================================
+        const STORAGE_KEY = 'CLASSIC_ARCADE_STATE_V1';
         let currentGame = 'hearts';
         let toastTimer = null;
+        let clearConfirmArmed = false;
+        let clearConfirmTimer = null;
+        let isHydratingState = false;
 
         function showToast(message, icon = "fa-circle-info") {
             const banner = document.getElementById('toast-banner');
@@ -840,31 +852,37 @@
             if (banner) banner.classList.add('hidden');
         }
 
-        function switchGame(gameId) {
-            currentGame = gameId;
+        function switchGame(gameId, skipSave = false) {
+            const validViews = ['hub', 'uno', 'hearts', 'spades', 'yatzee'];
+            const safeGameId = validViews.includes(gameId) ? gameId : 'hearts';
+            currentGame = safeGameId;
+
             document.querySelectorAll('.game-view').forEach(view => view.classList.add('hidden'));
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('ring-2', 'ring-white', 'scale-105');
             });
 
-            const activeBtn = document.getElementById(`nav-${gameId}`);
+            const activeBtn = document.getElementById(`nav-${safeGameId}`);
             if (activeBtn) {
                 activeBtn.classList.add('ring-2', 'ring-white', 'scale-105');
             }
 
-            if (gameId === 'hub') {
+            if (safeGameId === 'hub') {
                 const hubEl = document.getElementById('view-hub');
                 if (hubEl) hubEl.classList.remove('hidden');
+                if (!skipSave && !isHydratingState) saveArcadeState();
                 return;
             }
 
-            const targetView = document.getElementById(`view-${gameId}-inperson`);
+            const targetView = document.getElementById(`view-${safeGameId}-inperson`);
             if (targetView) targetView.classList.remove('hidden');
 
-            if (gameId === 'uno') renderUnoInPerson();
-            if (gameId === 'hearts') renderHeartsInPerson();
-            if (gameId === 'spades') renderSpadesInPerson();
-            if (gameId === 'yatzee') renderYatzeeInPerson();
+            if (safeGameId === 'uno') renderUnoInPerson();
+            if (safeGameId === 'hearts') renderHeartsInPerson();
+            if (safeGameId === 'spades') renderSpadesInPerson();
+            if (safeGameId === 'yatzee') renderYatzeeInPerson();
+
+            if (!skipSave && !isHydratingState) saveArcadeState();
         }
 
         // =====================================================================
@@ -889,9 +907,16 @@
         };
 
         function ensureUnoPlayerDraft(playerId) {
-            if (!unoInPersonState.stagedByPlayer[playerId]) {
+            if (!unoInPersonState.stagedByPlayer || typeof unoInPersonState.stagedByPlayer !== 'object') {
+                unoInPersonState.stagedByPlayer = {};
+            }
+            if (!unoInPersonState.stagedByPlayer[playerId] || typeof unoInPersonState.stagedByPlayer[playerId] !== 'object') {
                 unoInPersonState.stagedByPlayer[playerId] = { cards: [], manualPts: 0 };
             }
+            if (!Array.isArray(unoInPersonState.stagedByPlayer[playerId].cards)) {
+                unoInPersonState.stagedByPlayer[playerId].cards = [];
+            }
+            unoInPersonState.stagedByPlayer[playerId].manualPts = parseInt(unoInPersonState.stagedByPlayer[playerId].manualPts, 10) || 0;
             return unoInPersonState.stagedByPlayer[playerId];
         }
 
@@ -920,6 +945,7 @@
             }
             showToast("Uno match reset.", "fa-rotate-left");
             renderUnoInPerson();
+            saveArcadeState();
         }
 
         function continueUnoInPerson() {
@@ -928,12 +954,14 @@
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             }
+            saveArcadeState();
         }
 
         function unoSelectScorer(playerId) {
             unoInPersonState.activePlayerId = playerId;
             ensureUnoPlayerDraft(playerId);
             renderUnoInPerson();
+            saveArcadeState();
         }
 
         function unoNextPlayer() {
@@ -952,6 +980,7 @@
                     avatar.textContent = getPlayerInitial(p.name);
                 }
                 renderUnoPillsAndLabel();
+                saveArcadeState();
             }
         }
 
@@ -966,12 +995,14 @@
                 unoInPersonState.activePlayerId = unoInPersonState.players[0].id;
             }
             renderUnoInPerson();
+            saveArcadeState();
         }
 
         function unoAddKeypadCard(pts, label = '') {
             const draft = ensureUnoPlayerDraft(unoInPersonState.activePlayerId);
             draft.cards.push({ pts, label: label || `${pts}` });
             renderUnoInPerson();
+            saveArcadeState();
         }
 
         function unoUpdateManualPts(rawValue) {
@@ -982,6 +1013,7 @@
             renderUnoRosterOnly();
             const totalEl = document.getElementById('uno-draft-total-pts');
             if (totalEl) totalEl.innerText = getUnoPlayerStagedTotal(unoInPersonState.activePlayerId);
+            saveArcadeState();
         }
 
         function unoClearActivePlayerDraft() {
@@ -990,6 +1022,7 @@
             const manualInput = document.getElementById('uno-manual-pts-input');
             if (manualInput) manualInput.value = '';
             renderUnoInPerson();
+            saveArcadeState();
         }
 
         function unoClearAllRoundDrafts() {
@@ -999,6 +1032,7 @@
             const manualInput = document.getElementById('uno-manual-pts-input');
             if (manualInput) manualInput.value = '';
             renderUnoInPerson();
+            saveArcadeState();
             showToast("Cleared staged points for all players.", "fa-eraser");
         }
 
@@ -1006,6 +1040,7 @@
             const draft = ensureUnoPlayerDraft(unoInPersonState.activePlayerId);
             draft.cards.splice(index, 1);
             renderUnoInPerson();
+            saveArcadeState();
         }
 
         function unoSaveRoundPoints() {
@@ -1082,6 +1117,7 @@
             } else {
                 showToast(`Saved Round ${unoInPersonState.round - 1} points for all players!`, "fa-check-double");
             }
+            saveArcadeState();
         }
 
         function renderUnoPillsAndLabel() {
@@ -1241,7 +1277,8 @@
                 { id: 'h4', name: 'West',  score: 0, lastHand: 0, colorIndex: 3 }
             ],
             round: 1,
-            roundsHistory: []
+            roundsHistory: [],
+            draftRound: {}
         };
 
         let victoryShown = false;
@@ -1259,16 +1296,8 @@
                     avatar.textContent = getPlayerInitial(player.name);
                 }
                 renderHeartsScoreboardTable();
+                saveArcadeState();
             }
-        }
-
-        function adjustHeartsInputCount(id, delta) {
-            const input = document.getElementById(`hearts-h-count-${id}`);
-            if (!input) return;
-            const current = parseInt(input.value, 10) || 0;
-            const next = Math.max(0, Math.min(13, current + delta));
-            input.value = next;
-            validateHeartsSum();
         }
 
         function removeHeartsPlayer(id) {
@@ -1278,8 +1307,12 @@
             }
             const removed = heartsInPersonState.players.find(item => item.id === id);
             heartsInPersonState.players = heartsInPersonState.players.filter(item => item.id !== id);
+            if (heartsInPersonState.draftRound) {
+                delete heartsInPersonState.draftRound[id];
+            }
             showToast(`Removed ${removed ? removed.name : 'player'} from the table.`, "fa-user-minus");
             renderHeartsInPerson();
+            saveArcadeState();
         }
 
         function renderHeartsScoreboardTable() {
@@ -1317,6 +1350,9 @@
 
             heartsInPersonState.players.forEach((p, idx) => {
                 const color = getPlayerColor(p, idx);
+                const draftEntry = (heartsInPersonState.draftRound && heartsInPersonState.draftRound[p.id]) || { hearts: 0, hasQueen: false };
+                const savedHearts = Math.max(0, Math.min(13, parseInt(draftEntry.hearts, 10) || 0));
+                const savedQueen = Boolean(draftEntry.hasQueen);
                 const card = document.createElement('div');
                 card.className = "bg-slate-950/70 border border-slate-800/80 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3";
                 card.innerHTML = `
@@ -1334,15 +1370,13 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-2 text-xs">
-                        <div class="flex items-center space-x-1 bg-slate-900/90 border border-slate-800 rounded-xl px-1.5 py-1">
                     <div class="flex flex-wrap items-center gap-2.5 text-xs">
                         <div class="flex items-center space-x-1.5">
                             <label for="hearts-h-count-${p.id}" class="text-slate-400 font-semibold">♥:</label>
-                            <input type="number" id="hearts-h-count-${p.id}" min="0" max="13" value="0" oninput="validateHeartsSum()" onchange="validateHeartsSum()" class="w-14 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-white font-bold text-center focus:border-red-500 focus:outline-none">
+                            <input type="number" id="hearts-h-count-${p.id}" min="0" max="13" value="${savedHearts}" oninput="onHeartsInputChange()" onchange="onHeartsInputChange()" class="w-14 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-white font-bold text-center focus:border-red-500 focus:outline-none">
                         </div>
                         <label id="hearts-spade-q-label-${p.id}" class="flex items-center space-x-1.5 cursor-pointer bg-slate-800/80 hover:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700 text-slate-300 transition select-none">
-                            <input type="checkbox" id="hearts-spade-q-${p.id}" onchange="onHeartsQueenChange('${p.id}')" class="rounded bg-slate-900 border-slate-700 text-red-600 focus:ring-0">
+                            <input type="checkbox" id="hearts-spade-q-${p.id}" ${savedQueen ? 'checked' : ''} onchange="onHeartsQueenChange('${p.id}')" class="rounded bg-slate-900 border-slate-700 text-red-600 focus:ring-0">
                             <span class="font-semibold">♠Q (+13)</span>
                         </label>
                         <button onclick="heartsShootMoon('${p.id}')" class="bg-indigo-900/40 hover:bg-indigo-800 text-indigo-300 px-2.5 py-1 rounded-lg font-bold text-[11px] border border-indigo-700/40 transition" title="Shot the Moon (13 Hearts + Queen of Spades)">
@@ -1414,11 +1448,11 @@
             const qBadge = document.getElementById('hearts-queen-validator');
             if (qBadge) {
                 if (queenAssigned) {
-                    qBadge.textContent = "♠Q Assigned";
-                    qBadge.className = "text-xs font-bold px-3 py-1 rounded-full bg-emerald-950/70 border border-emerald-600/60 text-emerald-300 transition";
+                    qBadge.textContent = '♠Q Assigned';
+                    qBadge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-600/60 text-emerald-300 transition';
                 } else {
-                    qBadge.textContent = "Assign ♠Q (+13)";
-                    qBadge.className = "text-xs font-bold px-3 py-1 rounded-full bg-rose-950/70 border border-rose-700/60 text-rose-300 transition";
+                    qBadge.textContent = 'Assign ♠Q (+13)';
+                    qBadge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-rose-950/70 border border-rose-700/60 text-rose-300 transition';
                 }
             }
 
@@ -1426,13 +1460,34 @@
             if (sumBadge) {
                 sumBadge.textContent = `${sum} / 26 pts`;
                 if (sum === 26 && queenAssigned) {
-                    sumBadge.className = "text-xs font-bold px-3 py-1 rounded-full bg-emerald-950/70 border border-emerald-600/60 text-emerald-300 transition";
+                    sumBadge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-600/60 text-emerald-300 transition';
+                } else if (sum > 26) {
+                    sumBadge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-rose-950/80 border border-rose-600/60 text-rose-300 transition';
                 } else {
-                    sumBadge.className = "text-xs font-bold px-3 py-1 rounded-full bg-amber-950/70 border border-amber-700/60 text-amber-300 transition";
+                    sumBadge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-amber-950/70 border border-amber-700/60 text-amber-300 transition';
                 }
             }
 
             return { sum, queenAssigned };
+        }
+
+        function syncHeartsDraftFromDOM() {
+            const draft = {};
+            heartsInPersonState.players.forEach(p => {
+                const hInput = document.getElementById(`hearts-h-count-${p.id}`);
+                const qCheckbox = document.getElementById(`hearts-spade-q-${p.id}`);
+                draft[p.id] = {
+                    hearts: hInput ? Math.max(0, Math.min(13, parseInt(hInput.value, 10) || 0)) : 0,
+                    hasQueen: Boolean(qCheckbox && qCheckbox.checked)
+                };
+            });
+            heartsInPersonState.draftRound = draft;
+        }
+
+        function onHeartsInputChange() {
+            validateHeartsSum();
+            syncHeartsDraftFromDOM();
+            saveArcadeState();
         }
 
         function onHeartsQueenChange(selectedId) {
@@ -1446,6 +1501,8 @@
                 });
             }
             validateHeartsSum();
+            syncHeartsDraftFromDOM();
+            saveArcadeState();
         }
 
         function heartsShootMoon(shooterId) {
@@ -1461,6 +1518,8 @@
                 }
             });
             validateHeartsSum();
+            syncHeartsDraftFromDOM();
+            saveArcadeState();
             showToast("🌙 Shot the Moon preset applied!", "fa-moon");
         }
 
@@ -1505,6 +1564,7 @@
 
             heartsInPersonState.roundsHistory.unshift({ entries });
             heartsInPersonState.round += 1;
+            heartsInPersonState.draftRound = {};
             renderHeartsInPerson();
 
             const matchOver = heartsInPersonState.players.some(p => p.score >= 100);
@@ -1514,6 +1574,7 @@
             } else {
                 showToast("Hand points recorded successfully!", "fa-check");
             }
+            saveArcadeState();
         }
 
         function showHeartsInPersonVictory() {
@@ -1577,6 +1638,7 @@
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             }
+            saveArcadeState();
             showToast("Continuing match past 100 points.", "fa-play");
         }
 
@@ -1587,6 +1649,7 @@
             });
             heartsInPersonState.round = 1;
             heartsInPersonState.roundsHistory = [];
+            heartsInPersonState.draftRound = {};
             victoryShown = false;
             const modal = document.getElementById('hearts-inperson-victory-modal');
             if (modal) {
@@ -1594,6 +1657,7 @@
                 modal.classList.remove('flex');
             }
             renderHeartsInPerson();
+            saveArcadeState();
             showToast("Scores reset! Ready for a new Hearts match.", "fa-rotate-right");
         }
 
@@ -1601,6 +1665,8 @@
         // 5. SPADES IN-PERSON TABLE SCOREKEEPER
         // =====================================================================
         const spadesInPersonState = {
+            t1Name: 'Team 1 (North & South)',
+            t2Name: 'Team 2 (East & West)',
             t1Score: 0,
             t2Score: 0,
             t1Bags: 0,
@@ -1623,6 +1689,7 @@
             }
             showToast("Spades match reset.", "fa-rotate-left");
             renderSpadesInPerson();
+            saveArcadeState();
         }
 
         function continueSpadesInPerson() {
@@ -1631,11 +1698,16 @@
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             }
+            saveArcadeState();
         }
 
         function updateSpadesTeamNames() {
-            const t1Name = document.getElementById('spades-t1-name')?.value.trim() || 'Team 1';
-            const t2Name = document.getElementById('spades-t2-name')?.value.trim() || 'Team 2';
+            const t1Input = document.getElementById('spades-t1-name');
+            const t2Input = document.getElementById('spades-t2-name');
+            const t1Name = t1Input?.value.trim() || 'Team 1';
+            const t2Name = t2Input?.value.trim() || 'Team 2';
+            spadesInPersonState.t1Name = t1Name;
+            spadesInPersonState.t2Name = t2Name;
             const b1 = document.getElementById('spades-board-t1-label');
             const b2 = document.getElementById('spades-board-t2-label');
             if (b1) b1.innerText = t1Name;
@@ -1859,9 +1931,18 @@
             } else {
                 showToast("Spades round calculated!", "fa-check");
             }
+            saveArcadeState();
         }
 
         function renderSpadesInPerson() {
+            const t1Input = document.getElementById('spades-t1-name');
+            const t2Input = document.getElementById('spades-t2-name');
+            if (t1Input && document.activeElement !== t1Input && spadesInPersonState.t1Name) {
+                t1Input.value = spadesInPersonState.t1Name;
+            }
+            if (t2Input && document.activeElement !== t2Input && spadesInPersonState.t2Name) {
+                t2Input.value = spadesInPersonState.t2Name;
+            }
             updateSpadesTeamNames();
             updateSpadesNilInputs();
 
@@ -1934,11 +2015,13 @@
             yatzeeInPersonState.inputDice = [1, 2, 3, 4, 5];
             showToast("Yahtzee scorecards reset.", "fa-rotate-left");
             renderYatzeeInPerson();
+            saveArcadeState();
         }
 
         function yatzeeSelectPlayer(playerId) {
             yatzeeInPersonState.activePlayerId = playerId;
             renderYatzeeInPerson();
+            saveArcadeState();
         }
 
         function updateYatzeePlayerNameLive(id, newName) {
@@ -1949,6 +2032,7 @@
                 if (titleEl && p.id === yatzeeInPersonState.activePlayerId) {
                     titleEl.innerText = `Scorecard: ${p.name}`;
                 }
+                saveArcadeState();
             }
         }
 
@@ -1962,17 +2046,20 @@
                 yatzeeInPersonState.activePlayerId = yatzeeInPersonState.players[0].id;
             }
             renderYatzeeInPerson();
+            saveArcadeState();
         }
 
         function rollPhysicalSimulation() {
             yatzeeInPersonState.inputDice = yatzeeInPersonState.inputDice.map(() => Math.floor(Math.random() * 6) + 1);
             renderYatzeeInPerson();
+            saveArcadeState();
         }
 
         function cyclePhysicalDie(index) {
             const cur = yatzeeInPersonState.inputDice[index];
             yatzeeInPersonState.inputDice[index] = cur === 6 ? 1 : cur + 1;
             renderYatzeeInPerson();
+            saveArcadeState();
         }
 
         function bankInPersonYatzee(cat) {
@@ -1980,6 +2067,7 @@
             if (!activeP) return;
             activeP.scores[cat] = calculateScore(cat, yatzeeInPersonState.inputDice);
             renderYatzeeInPerson();
+            saveArcadeState();
         }
 
         function setManualYatzeeCategory(cat, rawVal) {
@@ -1993,6 +2081,7 @@
             }
             updateYatzeeTotalsDisplay(activeP);
             renderYatzeePlayerTabs();
+            saveArcadeState();
         }
 
         function adjustYatzeeBonus(delta) {
@@ -2000,6 +2089,7 @@
             if (!activeP) return;
             activeP.yahtzeeBonuses = Math.max(0, (activeP.yahtzeeBonuses || 0) + delta);
             renderYatzeeInPerson();
+            saveArcadeState();
         }
 
         function getYatzeeBreakdown(player) {
@@ -2207,13 +2297,331 @@
                 renderYatzeeInPerson();
             }
 
+            saveArcadeState();
             showToast(`Added ${name} to the table!`, "fa-user-check");
             closeAddPlayerModal();
         }
 
-        // Initialize directly into the Hearts In-Person Table Scorekeeper on load
+        // =====================================================================
+        // 8. LOCALSTORAGE STATE PERSISTENCE ENGINE
+        // =====================================================================
+        function getSpadesFormSnapshot() {
+            const t1p1El = document.getElementById('spades-t1-p1-bid');
+            const t1p2El = document.getElementById('spades-t1-p2-bid');
+            const t2p1El = document.getElementById('spades-t2-p1-bid');
+            const t2p2El = document.getElementById('spades-t2-p2-bid');
+            const t1TricksEl = document.getElementById('spades-t1-tricks');
+            const t2TricksEl = document.getElementById('spades-t2-tricks');
+
+            return {
+                t1p1Bid: t1p1El ? t1p1El.value : '2',
+                t1p2Bid: t1p2El ? t1p2El.value : '2',
+                t2p1Bid: t2p1El ? t2p1El.value : '2',
+                t2p2Bid: t2p2El ? t2p2El.value : '2',
+                t1Tricks: t1TricksEl ? (parseInt(t1TricksEl.value, 10) || 0) : 5,
+                t2Tricks: t2TricksEl ? (parseInt(t2TricksEl.value, 10) || 0) : 8
+            };
+        }
+
+        function applySpadesFormSnapshot(formSnap) {
+            if (!formSnap || typeof formSnap !== 'object') return;
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if (el && val !== undefined && val !== null) el.value = val;
+            };
+            setVal('spades-t1-p1-bid', formSnap.t1p1Bid);
+            setVal('spades-t1-p2-bid', formSnap.t1p2Bid);
+            setVal('spades-t2-p1-bid', formSnap.t2p1Bid);
+            setVal('spades-t2-p2-bid', formSnap.t2p2Bid);
+            setVal('spades-t1-tricks', formSnap.t1Tricks);
+            setVal('spades-t2-tricks', formSnap.t2Tricks);
+        }
+
+        function saveArcadeState() {
+            if (isHydratingState) return;
+            try {
+                const safeHeartsPlayers = Array.isArray(heartsInPersonState.players) ? heartsInPersonState.players : [];
+                const safeUnoPlayers = Array.isArray(unoInPersonState.players) ? unoInPersonState.players : [];
+                const safeYatzeePlayers = Array.isArray(yatzeeInPersonState.players) ? yatzeeInPersonState.players : [];
+
+                const payload = {
+                    version: 1,
+                    activeGame: currentGame,
+                    heartsInPersonState: {
+                        players: safeHeartsPlayers,
+                        round: Math.max(1, parseInt(heartsInPersonState.round, 10) || 1),
+                        roundsHistory: Array.isArray(heartsInPersonState.roundsHistory) ? heartsInPersonState.roundsHistory : [],
+                        draftRound: (heartsInPersonState.draftRound && typeof heartsInPersonState.draftRound === 'object') ? heartsInPersonState.draftRound : {},
+                        victoryShown: Boolean(victoryShown)
+                    },
+                    unoInPersonState: {
+                        players: safeUnoPlayers,
+                        activePlayerId: unoInPersonState.activePlayerId || (safeUnoPlayers[0] && safeUnoPlayers[0].id) || 'u1',
+                        round: Math.max(1, parseInt(unoInPersonState.round, 10) || 1),
+                        stagedByPlayer: (unoInPersonState.stagedByPlayer && typeof unoInPersonState.stagedByPlayer === 'object') ? unoInPersonState.stagedByPlayer : {},
+                        roundsHistory: Array.isArray(unoInPersonState.roundsHistory) ? unoInPersonState.roundsHistory : [],
+                        victoryShown: Boolean(unoInPersonState.victoryShown)
+                    },
+                    spadesInPersonState: {
+                        t1Name: spadesInPersonState.t1Name || 'Team 1 (North & South)',
+                        t2Name: spadesInPersonState.t2Name || 'Team 2 (East & West)',
+                        t1Score: Number(spadesInPersonState.t1Score) || 0,
+                        t2Score: Number(spadesInPersonState.t2Score) || 0,
+                        t1Bags: Number(spadesInPersonState.t1Bags) || 0,
+                        t2Bags: Number(spadesInPersonState.t2Bags) || 0,
+                        roundsHistory: Array.isArray(spadesInPersonState.roundsHistory) ? spadesInPersonState.roundsHistory : [],
+                        victoryShown: Boolean(spadesInPersonState.victoryShown),
+                        formSnapshot: getSpadesFormSnapshot()
+                    },
+                    yatzeeInPersonState: {
+                        players: safeYatzeePlayers,
+                        activePlayerId: yatzeeInPersonState.activePlayerId || (safeYatzeePlayers[0] && safeYatzeePlayers[0].id) || 'yp1',
+                        inputDice: Array.isArray(yatzeeInPersonState.inputDice) && yatzeeInPersonState.inputDice.length === 5
+                            ? yatzeeInPersonState.inputDice
+                            : [1, 2, 3, 4, 5]
+                    }
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+            } catch (err) {
+                console.warn("Could not save arcade state to localStorage:", err);
+            }
+        }
+
+        function loadArcadeState() {
+            isHydratingState = true;
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return false;
+                const parsed = JSON.parse(raw);
+                if (!parsed || typeof parsed !== 'object') {
+                    throw new Error("Invalid root payload in localStorage.");
+                }
+
+                // 1. Sanitize & deep-merge Hearts state
+                if (parsed.heartsInPersonState && typeof parsed.heartsInPersonState === 'object') {
+                    const hp = parsed.heartsInPersonState;
+                    if (Array.isArray(hp.players) && hp.players.length >= 2) {
+                        heartsInPersonState.players = hp.players.map((p, idx) => ({
+                            id: String((p && p.id) || `h_${idx}`),
+                            name: String((p && p.name) || `Player ${idx + 1}`),
+                            score: Number(p && p.score) || 0,
+                            lastHand: Number(p && p.lastHand) || 0,
+                            colorIndex: (p && typeof p.colorIndex === 'number' && !isNaN(p.colorIndex)) ? p.colorIndex : idx
+                        }));
+                    }
+                    heartsInPersonState.round = Math.max(1, parseInt(hp.round, 10) || 1);
+                    heartsInPersonState.roundsHistory = Array.isArray(hp.roundsHistory) ? hp.roundsHistory : [];
+                    heartsInPersonState.draftRound = {};
+                    if (hp.draftRound && typeof hp.draftRound === 'object') {
+                        heartsInPersonState.players.forEach(p => {
+                            const entry = hp.draftRound[p.id];
+                            if (entry && typeof entry === 'object') {
+                                heartsInPersonState.draftRound[p.id] = {
+                                    hearts: Math.max(0, Math.min(13, parseInt(entry.hearts, 10) || 0)),
+                                    hasQueen: Boolean(entry.hasQueen)
+                                };
+                            }
+                        });
+                    }
+                    victoryShown = Boolean(hp.victoryShown);
+                }
+
+                // 2. Sanitize & deep-merge Uno state (guaranteeing stagedByPlayer exists for every seat)
+                if (parsed.unoInPersonState && typeof parsed.unoInPersonState === 'object') {
+                    const up = parsed.unoInPersonState;
+                    if (Array.isArray(up.players) && up.players.length >= 2) {
+                        unoInPersonState.players = up.players.map((p, idx) => ({
+                            id: String((p && p.id) || `u_${idx}`),
+                            name: String((p && p.name) || `Player ${idx + 1}`),
+                            score: Number(p && p.score) || 0,
+                            rounds: Number(p && p.rounds) || 0,
+                            colorIndex: (p && typeof p.colorIndex === 'number' && !isNaN(p.colorIndex)) ? p.colorIndex : idx
+                        }));
+                    }
+                    unoInPersonState.round = Math.max(1, parseInt(up.round, 10) || 1);
+                    unoInPersonState.roundsHistory = Array.isArray(up.roundsHistory) ? up.roundsHistory : [];
+                    unoInPersonState.victoryShown = Boolean(up.victoryShown);
+
+                    const savedStaged = (up.stagedByPlayer && typeof up.stagedByPlayer === 'object') ? up.stagedByPlayer : {};
+                    unoInPersonState.stagedByPlayer = {};
+                    unoInPersonState.players.forEach(p => {
+                        const entry = savedStaged[p.id];
+                        const safeCards = Array.isArray(entry && entry.cards)
+                            ? entry.cards
+                                .filter(c => c && typeof c === 'object')
+                                .map(c => ({
+                                    pts: parseInt(c.pts, 10) || 0,
+                                    label: String(c.label || c.pts || '0')
+                                }))
+                            : [];
+                        unoInPersonState.stagedByPlayer[p.id] = {
+                            cards: safeCards,
+                            manualPts: Math.max(0, parseInt(entry && entry.manualPts, 10) || 0)
+                        };
+                    });
+
+                    const savedActiveUno = up.activePlayerId;
+                    unoInPersonState.activePlayerId = unoInPersonState.players.some(p => p.id === savedActiveUno)
+                        ? savedActiveUno
+                        : unoInPersonState.players[0].id;
+                }
+
+                // 3. Sanitize & deep-merge Spades state
+                if (parsed.spadesInPersonState && typeof parsed.spadesInPersonState === 'object') {
+                    const sp = parsed.spadesInPersonState;
+                    if (typeof sp.t1Name === 'string' && sp.t1Name.trim()) spadesInPersonState.t1Name = sp.t1Name;
+                    if (typeof sp.t2Name === 'string' && sp.t2Name.trim()) spadesInPersonState.t2Name = sp.t2Name;
+                    spadesInPersonState.t1Score = Number(sp.t1Score) || 0;
+                    spadesInPersonState.t2Score = Number(sp.t2Score) || 0;
+                    spadesInPersonState.t1Bags = Math.max(0, parseInt(sp.t1Bags, 10) || 0);
+                    spadesInPersonState.t2Bags = Math.max(0, parseInt(sp.t2Bags, 10) || 0);
+                    spadesInPersonState.roundsHistory = Array.isArray(sp.roundsHistory) ? sp.roundsHistory : [];
+                    spadesInPersonState.victoryShown = Boolean(sp.victoryShown);
+                    if (sp.formSnapshot && typeof sp.formSnapshot === 'object') {
+                        applySpadesFormSnapshot(sp.formSnapshot);
+                    }
+                }
+
+                // 4. Sanitize & deep-merge Yahtzee state
+                if (parsed.yatzeeInPersonState && typeof parsed.yatzeeInPersonState === 'object') {
+                    const yp = parsed.yatzeeInPersonState;
+                    if (Array.isArray(yp.players) && yp.players.length >= 1) {
+                        yatzeeInPersonState.players = yp.players.map((p, idx) => {
+                            const mergedScores = createEmptyYatzeeSheet();
+                            if (p && p.scores && typeof p.scores === 'object') {
+                                Object.keys(mergedScores).forEach(cat => {
+                                    const rawVal = p.scores[cat];
+                                    mergedScores[cat] = (rawVal === null || rawVal === undefined || rawVal === '')
+                                        ? null
+                                        : Math.max(0, parseInt(rawVal, 10) || 0);
+                                });
+                            }
+                            return {
+                                id: String((p && p.id) || `yp_${idx}`),
+                                name: String((p && p.name) || `Player ${idx + 1}`),
+                                scores: mergedScores,
+                                yahtzeeBonuses: Math.max(0, parseInt(p && p.yahtzeeBonuses, 10) || 0)
+                            };
+                        });
+                    }
+                    const savedActiveYatzee = yp.activePlayerId;
+                    yatzeeInPersonState.activePlayerId = yatzeeInPersonState.players.some(p => p.id === savedActiveYatzee)
+                        ? savedActiveYatzee
+                        : yatzeeInPersonState.players[0].id;
+                    if (Array.isArray(yp.inputDice) && yp.inputDice.length === 5) {
+                        yatzeeInPersonState.inputDice = yp.inputDice.map(d => Math.max(1, Math.min(6, parseInt(d, 10) || 1)));
+                    }
+                }
+
+                // 5. Restore Active View safely
+                const validViews = ['hub', 'uno', 'hearts', 'spades', 'yatzee'];
+                if (validViews.includes(parsed.activeGame)) {
+                    currentGame = parsed.activeGame;
+                }
+
+                return true;
+            } catch (err) {
+                console.warn("Corrupted saved arcade state detected; clearing localStorage key:", err);
+                try {
+                    localStorage.removeItem(STORAGE_KEY);
+                } catch (_) {
+                    // Ignore storage removal errors in restricted frames
+                }
+                return false;
+            } finally {
+                isHydratingState = false;
+            }
+        }
+
+        function handleClearAllSavedData() {
+            const btn = document.getElementById('btn-clear-saved-data');
+            const label = document.getElementById('clear-saved-data-label');
+
+            if (!clearConfirmArmed) {
+                clearConfirmArmed = true;
+                if (label) label.textContent = "Click again to confirm reset";
+                if (btn) {
+                    btn.classList.add('bg-rose-950/80', 'border-rose-600', 'text-rose-200');
+                }
+                showToast("Click 'Clear Saved Data' again within 4 seconds to wipe all saved games.", "fa-triangle-exclamation");
+                if (clearConfirmTimer) clearTimeout(clearConfirmTimer);
+                clearConfirmTimer = setTimeout(() => {
+                    clearConfirmArmed = false;
+                    if (label) label.textContent = "Clear Saved Data";
+                    if (btn) {
+                        btn.classList.remove('bg-rose-950/80', 'border-rose-600', 'text-rose-200');
+                    }
+                }, 4000);
+                return;
+            }
+
+            clearConfirmArmed = false;
+            if (clearConfirmTimer) clearTimeout(clearConfirmTimer);
+            if (label) label.textContent = "Clear Saved Data";
+            if (btn) {
+                btn.classList.remove('bg-rose-950/80', 'border-rose-600', 'text-rose-200');
+            }
+
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch (err) {
+                console.warn("Error clearing localStorage:", err);
+            }
+
+            // Reset all states back to clean defaults
+            heartsInPersonState.players = [
+                { id: 'h1', name: 'North', score: 0, lastHand: 0, colorIndex: 0 },
+                { id: 'h2', name: 'East',  score: 0, lastHand: 0, colorIndex: 1 },
+                { id: 'h3', name: 'South', score: 0, lastHand: 0, colorIndex: 2 },
+                { id: 'h4', name: 'West',  score: 0, lastHand: 0, colorIndex: 3 }
+            ];
+            heartsInPersonState.round = 1;
+            heartsInPersonState.roundsHistory = [];
+            heartsInPersonState.draftRound = {};
+            victoryShown = false;
+
+            unoInPersonState.players = [
+                { id: 'u1', name: 'Alice', score: 0, rounds: 0, colorIndex: 0 },
+                { id: 'u2', name: 'Bob', score: 0, rounds: 0, colorIndex: 1 },
+                { id: 'u3', name: 'Charlie', score: 0, rounds: 0, colorIndex: 2 }
+            ];
+            unoInPersonState.activePlayerId = 'u1';
+            unoInPersonState.round = 1;
+            unoInPersonState.stagedByPlayer = {
+                u1: { cards: [], manualPts: 0 },
+                u2: { cards: [], manualPts: 0 },
+                u3: { cards: [], manualPts: 0 }
+            };
+            unoInPersonState.roundsHistory = [];
+            unoInPersonState.victoryShown = false;
+
+            spadesInPersonState.t1Name = 'Team 1 (North & South)';
+            spadesInPersonState.t2Name = 'Team 2 (East & West)';
+            spadesInPersonState.t1Score = 0;
+            spadesInPersonState.t2Score = 0;
+            spadesInPersonState.t1Bags = 0;
+            spadesInPersonState.t2Bags = 0;
+            spadesInPersonState.roundsHistory = [];
+            spadesInPersonState.victoryShown = false;
+
+            yatzeeInPersonState.players = [
+                { id: 'yp1', name: 'Player 1', scores: createEmptyYatzeeSheet(), yahtzeeBonuses: 0 },
+                { id: 'yp2', name: 'Player 2', scores: createEmptyYatzeeSheet(), yahtzeeBonuses: 0 }
+            ];
+            yatzeeInPersonState.activePlayerId = 'yp1';
+            yatzeeInPersonState.inputDice = [1, 2, 3, 4, 5];
+
+            switchGame('hub');
+            showToast("All saved data cleared and reset to defaults.", "fa-check");
+        }
+
+        // Restore saved state (or initialize default view) on load
         window.addEventListener('DOMContentLoaded', () => {
-            switchGame('hearts');
+            const restored = loadArcadeState();
+            switchGame(currentGame, true);
+            if (restored) {
+                saveArcadeState();
+            }
         });
     </script>
 </body>
