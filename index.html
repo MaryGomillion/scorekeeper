@@ -251,7 +251,7 @@
                                 <button onclick="unoNextPlayer()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-3.5 py-2.5 rounded-xl text-xs border border-slate-700 transition flex items-center gap-1.5" title="Switch to next player">
                                     <span>Next Player</span> <i class="fa-solid fa-arrow-right"></i>
                                 </button>
-                                <button onclick="unoSaveRoundPoints()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-rose-600/30 flex items-center gap-1.5">
+                                <button id="btn-uno-save-round" type="button" onclick="unoSaveRoundPoints()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-rose-600/30 flex items-center gap-1.5">
                                     <i class="fa-solid fa-check-double"></i> Save Round Points
                                 </button>
                             </div>
@@ -286,8 +286,11 @@
             </div>
 
             <!-- Uno 500-Point Victory Modal -->
-            <div id="uno-inperson-victory-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden items-center justify-center p-4">
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center">
+            <div id="uno-inperson-victory-modal" onclick="if(event.target === this) continueUnoInPerson()" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center relative">
+                    <button type="button" onclick="continueUnoInPerson()" aria-label="Close victory modal" class="absolute top-4 right-4 text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-700 flex items-center justify-center transition">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                     <div class="inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 bg-rose-500/10 text-rose-400 border border-rose-500/30">
                         🏆 Uno Match Winner • 500+ Points Reached
                     </div>
@@ -297,13 +300,13 @@
                     </p>
                     <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 mb-6 text-left">
                         <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3">Final Standings (Lowest Wins)</div>
-                        <div id="uno-victory-standings-list" class="space-y-1.5 text-xs"></div>
+                        <div id="uno-victory-standings-list" class="space-y-1.5 text-xs max-h-56 overflow-y-auto"></div>
                     </div>
                     <div class="flex items-center justify-center gap-3">
-                        <button onclick="continueUnoInPerson()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-2.5 rounded-xl text-xs border border-slate-700 transition">
+                        <button type="button" onclick="continueUnoInPerson()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-2.5 rounded-xl text-xs border border-slate-700 transition">
                             <i class="fa-solid fa-play mr-1.5"></i> Continue Playing
                         </button>
-                        <button onclick="resetUnoInPerson()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-rose-600/30">
+                        <button type="button" onclick="resetUnoInPerson()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-rose-600/30">
                             <i class="fa-solid fa-rotate-right mr-1.5"></i> Play Again
                         </button>
                     </div>
@@ -921,168 +924,173 @@
         }
 
         function unoSaveRoundPoints() {
-            if (unoInPersonState.players.length === 0) return;
+            if (!Array.isArray(unoInPersonState.players) || unoInPersonState.players.length === 0) return;
 
-            const roundEntries = [];
-            unoInPersonState.players.forEach((p, idx) => {
-                const stagedPts = getUnoPlayerStagedTotal(p.id);
-                const draft = ensureUnoPlayerDraft(p.id);
-                p.score += stagedPts;
-                p.rounds += 1;
-                roundEntries.push({
-                    playerId: p.id,
-                    playerName: p.name,
-                    colorIndex: p.colorIndex ?? idx,
-                    points: stagedPts,
-                    cardsCount: draft.cards.length
+            try {
+                // Ensure history array is always valid even if restored from older storage
+                if (!Array.isArray(unoInPersonState.roundsHistory)) {
+                    unoInPersonState.roundsHistory = [];
+                }
+                unoInPersonState.round = Math.max(1, parseInt(unoInPersonState.round, 10) || 1);
+
+                const roundEntries = [];
+                unoInPersonState.players.forEach((p, idx) => {
+                    const stagedPts = getUnoPlayerStagedTotal(p.id);
+                    const draft = ensureUnoPlayerDraft(p.id);
+                    p.score = (Number(p.score) || 0) + stagedPts;
+                    p.rounds = (Number(p.rounds) || 0) + 1;
+                    roundEntries.push({
+                        playerId: p.id,
+                        playerName: p.name,
+                        colorIndex: (typeof p.colorIndex === 'number' && !isNaN(p.colorIndex)) ? p.colorIndex : idx,
+                        points: stagedPts,
+                        cardsCount: draft.cards.length
+                    });
+                    // Reset player's staged points for next round
+                    unoInPersonState.stagedByPlayer[p.id] = { cards: [], manualPts: 0 };
                 });
-                // Reset player's staged points for next round
-                unoInPersonState.stagedByPlayer[p.id] = { cards: [], manualPts: 0 };
-            });
 
-            unoInPersonState.roundsHistory.unshift({
-                roundNum: unoInPersonState.round,
-                entries: roundEntries
-            });
-            unoInPersonState.round += 1;
+                unoInPersonState.roundsHistory.unshift({
+                    roundNum: unoInPersonState.round,
+                    entries: roundEntries
+                });
+                unoInPersonState.round += 1;
 
-            const manualInput = document.getElementById('uno-manual-pts-input');
-            if (manualInput) manualInput.value = '';
+                const manualInput = document.getElementById('uno-manual-pts-input');
+                if (manualInput) manualInput.value = '';
 
-            renderUnoInPerson();
+                renderUnoInPerson();
 
-            const matchOver = unoInPersonState.players.some(p => p.score >= 500);
-            if (matchOver && !unoInPersonState.victoryShown) {
-                unoInPersonState.victoryShown = true;
-                const sorted = [...unoInPersonState.players].sort((a, b) => a.score - b.score);
-                const winner = sorted[0];
-                const modal = document.getElementById('uno-inperson-victory-modal');
-                const wBadge = document.getElementById('uno-victory-winner-badge');
-                const wScore = document.getElementById('uno-victory-winner-score');
-                const listEl = document.getElementById('uno-victory-standings-list');
-                const wColor = getPlayerColor(winner, 0);
+                const matchOver = unoInPersonState.players.some(p => (Number(p.score) || 0) >= 500);
+                if (matchOver && !unoInPersonState.victoryShown) {
+                    unoInPersonState.victoryShown = true;
+                    const sorted = [...unoInPersonState.players].sort((a, b) => (Number(a.score) || 0) - (Number(b.score) || 0));
+                    const winner = sorted[0];
+                    const modal = document.getElementById('uno-inperson-victory-modal');
+                    const wBadge = document.getElementById('uno-victory-winner-badge');
+                    const wScore = document.getElementById('uno-victory-winner-score');
+                    const listEl = document.getElementById('uno-victory-standings-list');
+                    const wColor = getPlayerColor(winner, 0);
 
-                if (wBadge) {
-                    wBadge.innerHTML = `
-                        <span class="w-9 h-9 rounded-xl ${wColor.bg} ${wColor.text} border ${wColor.border} font-extrabold flex items-center justify-center text-sm shadow">
-                            ${escapeHtml(getPlayerInitial(winner.name))}
-                        </span>
-                        <span class="w-3 h-3 rounded-full ${wColor.dot}"></span>
-                        <h3 class="text-2xl sm:text-3xl font-extrabold text-white game-font">${escapeHtml(winner.name)} Wins!</h3>
-                    `;
-                }
-                if (wScore) wScore.innerText = `${winner.score} pts`;
-                if (listEl) {
-                    listEl.innerHTML = sorted.map((p, idx) => {
-                        const c = getPlayerColor(p, idx);
-                        const isWinner = idx === 0;
-                        const crossed500 = p.score >= 500;
-                        return `
-                            <div class="flex justify-between items-center py-2 px-3 rounded-xl ${isWinner ? 'bg-amber-500/15 border border-amber-500/40 font-bold text-amber-300' : 'border-b border-slate-800/60 text-slate-300'}">
-                                <span class="flex items-center gap-2">
-                                    <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${isWinner ? 'bg-amber-400 text-slate-950' : 'bg-slate-800 text-slate-400'}">#${idx + 1}</span>
-                                    <span class="w-5 h-5 rounded-md ${c.bg} ${c.text} border ${c.border} font-bold flex items-center justify-center text-[10px]">${escapeHtml(getPlayerInitial(p.name))}</span>
-                                    <span class="w-2 h-2 rounded-full ${c.dot}"></span>
-                                    <span>${escapeHtml(p.name)}</span>
-                                    ${isWinner ? '<i class="fa-solid fa-crown text-amber-400 text-xs"></i>' : ''}
-                                </span>
-                                <span class="font-mono ${crossed500 ? 'text-rose-400 font-black' : isWinner ? 'text-amber-300 font-black' : 'text-slate-300'}">${p.score} pts</span>
-                            </div>
+                    if (wBadge) {
+                        wBadge.innerHTML = `
+                            <span class="w-9 h-9 rounded-xl ${wColor.bg} ${wColor.text} border ${wColor.border} font-extrabold flex items-center justify-center text-sm shadow">
+                                ${escapeHtml(getPlayerInitial(winner.name))}
+                            </span>
+                            <span class="w-3 h-3 rounded-full ${wColor.dot}"></span>
+                            <h3 class="text-2xl sm:text-3xl font-extrabold text-white game-font">${escapeHtml(winner.name)} Wins!</h3>
                         `;
-                    }).join('');
+                    }
+                    if (wScore) wScore.innerText = `${winner.score} pts`;
+                    if (listEl) {
+                        listEl.innerHTML = sorted.map((p, idx) => {
+                            const c = getPlayerColor(p, idx);
+                            const isWinner = idx === 0;
+                            const crossed500 = (Number(p.score) || 0) >= 500;
+                            return `
+                                <div class="flex justify-between items-center py-2 px-3 rounded-xl ${isWinner ? 'bg-amber-500/15 border border-amber-500/40 font-bold text-amber-300' : 'border-b border-slate-800/60 text-slate-300'}">
+                                    <span class="flex items-center gap-2">
+                                        <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${isWinner ? 'bg-amber-400 text-slate-950' : 'bg-slate-800 text-slate-400'}">#${idx + 1}</span>
+                                        <span class="w-5 h-5 rounded-md ${c.bg} ${c.text} border ${c.border} font-bold flex items-center justify-center text-[10px]">${escapeHtml(getPlayerInitial(p.name))}</span>
+                                        <span class="w-2 h-2 rounded-full ${c.dot}"></span>
+                                        <span>${escapeHtml(p.name)}</span>
+                                        ${isWinner ? '<i class="fa-solid fa-crown text-amber-400 text-xs"></i>' : ''}
+                                    </span>
+                                    <span class="font-mono ${crossed500 ? 'text-rose-400 font-black' : isWinner ? 'text-amber-300 font-black' : 'text-slate-300'}">${p.score} pts</span>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                    if (modal) {
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                    }
+                } else {
+                    showToast(`Saved Round ${unoInPersonState.round - 1} points for all players!`, "fa-check-double");
                 }
-                if (modal) {
-                    modal.classList.remove('hidden');
-                    modal.classList.add('flex');
-                }
-            } else {
-                showToast(`Saved Round ${unoInPersonState.round - 1} points for all players!`, "fa-check-double");
+            } catch (err) {
+                console.error("Error saving Uno round points:", err);
+                showToast("Recovered from an error while saving round points.", "fa-triangle-exclamation");
+            } finally {
+                saveArcadeState();
             }
-            saveArcadeState();
         }
 
         function renderUnoPillsAndLabel() {
-            const pillsContainer = document.getElementById('uno-player-selector-pills');
-            if (pillsContainer) {
-                pillsContainer.innerHTML = '';
-                unoInPersonState.players.forEach((p, idx) => {
-                    const isActive = p.id === unoInPersonState.activePlayerId;
-                    const color = getPlayerColor(p, idx);
-                    const stagedPts = getUnoPlayerStagedTotal(p.id);
-                    const pill = document.createElement('button');
-                    pill.onclick = () => unoSelectScorer(p.id);
-                    pill.className = `px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 border ${
-                        isActive
-                            ? `bg-slate-800 text-white ${color.border} ring-2 ${color.ring} shadow-md`
-                            : 'bg-slate-900/90 text-slate-300 border-slate-800 hover:bg-slate-800'
-                    }`;
-                    pill.innerHTML = `
-                        <span class="w-5 h-5 rounded-md ${color.bg} ${color.text} border ${color.border} font-extrabold flex items-center justify-center text-[10px]">${escapeHtml(getPlayerInitial(p.name))}</span>
-                        <span class="w-2 h-2 rounded-full ${color.dot}"></span>
-                        <span>${escapeHtml(p.name)}</span>
-                        <span class="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold ${
-                            stagedPts > 0
-                                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                                : 'bg-slate-800 text-slate-400'
-                        }">+${stagedPts}</span>
-                    `;
-                    pillsContainer.appendChild(pill);
-                });
-            }
-            const activeIdx = unoInPersonState.players.findIndex(p => p.id === unoInPersonState.activePlayerId);
-            const activeP = unoInPersonState.players[activeIdx];
+            const activePlayer = unoInPersonState.players.find(p => p.id === unoInPersonState.activePlayerId) || unoInPersonState.players[0];
+            if (!activePlayer) return;
+            unoInPersonState.activePlayerId = activePlayer.id;
+            const activeIdx = unoInPersonState.players.indexOf(activePlayer);
+            const activeColor = getPlayerColor(activePlayer, activeIdx);
+
             const labelEl = document.getElementById('uno-active-scorer-label');
-            if (labelEl && activeP) {
-                const color = getPlayerColor(activeP, activeIdx);
+            if (labelEl) {
                 labelEl.innerHTML = `
-                    <span class="w-2 h-2 rounded-full ${color.dot}"></span>
-                    <span class="${color.text}">Staging: ${escapeHtml(activeP.name)}</span>
+                    <span class="w-4 h-4 rounded-md ${activeColor.bg} ${activeColor.text} border ${activeColor.border} font-extrabold flex items-center justify-center text-[9px]">${escapeHtml(getPlayerInitial(activePlayer.name))}</span>
+                    <span class="w-2 h-2 rounded-full ${activeColor.dot}"></span>
+                    <span>Staging: ${escapeHtml(activePlayer.name)}</span>
                 `;
             }
+
             const ownerEl = document.getElementById('uno-active-cards-owner');
-            if (ownerEl && activeP) {
-                ownerEl.textContent = activeP.name;
+            if (ownerEl) ownerEl.textContent = activePlayer.name;
+
+            const pillsEl = document.getElementById('uno-player-selector-pills');
+            if (pillsEl) {
+                pillsEl.innerHTML = unoInPersonState.players.map((p, idx) => {
+                    const c = getPlayerColor(p, idx);
+                    const isActive = p.id === unoInPersonState.activePlayerId;
+                    const stagedPts = getUnoPlayerStagedTotal(p.id);
+                    return `
+                        <button type="button" onclick="unoSelectScorer('${p.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border ${
+                            isActive
+                                ? `${c.bg} ${c.text} ${c.border} ring-2 ${c.ring} shadow-md`
+                                : 'bg-slate-950/70 border-slate-800 text-slate-300 hover:border-slate-600'
+                        }">
+                            <span class="w-5 h-5 rounded-md ${c.bg} ${c.text} border ${c.border} font-extrabold flex items-center justify-center text-[10px]">${escapeHtml(getPlayerInitial(p.name))}</span>
+                            <span class="w-2 h-2 rounded-full ${c.dot}"></span>
+                            <span>${escapeHtml(p.name)}</span>
+                            <span class="ml-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-mono ${stagedPts > 0 ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' : 'bg-slate-800 text-slate-400'}">+${stagedPts}</span>
+                        </button>
+                    `;
+                }).join('');
             }
         }
 
         function renderUnoRosterOnly() {
             const rosterEl = document.getElementById('uno-editable-roster');
             if (!rosterEl) return;
-            rosterEl.innerHTML = '';
-            const sorted = [...unoInPersonState.players].sort((a, b) => a.score - b.score);
-            sorted.forEach((p, idx) => {
-                const color = getPlayerColor(p, idx);
+
+            const sorted = [...unoInPersonState.players].sort((a, b) => (Number(a.score) || 0) - (Number(b.score) || 0));
+            const lowestScore = sorted.length > 0 ? (Number(sorted[0].score) || 0) : 0;
+
+            rosterEl.innerHTML = sorted.map((p, idx) => {
+                const c = getPlayerColor(p, idx);
                 const stagedPts = getUnoPlayerStagedTotal(p.id);
-                const isSelected = p.id === unoInPersonState.activePlayerId;
-                const row = document.createElement('div');
-                row.className = `bg-slate-950/70 border rounded-2xl px-3.5 py-2.5 flex items-center justify-between gap-2 transition ${
-                    isSelected ? `${color.border} bg-slate-900/90` : 'border-slate-800/80'
-                }`;
-                row.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <button onclick="unoSelectScorer('${p.id}')" title="Select player to stage points" class="flex items-center gap-2 focus:outline-none">
-                            <span id="uno-avatar-${p.id}" class="w-7 h-7 rounded-lg ${color.bg} ${color.text} border ${color.border} font-extrabold flex items-center justify-center text-xs shrink-0">
+                const isLeading = idx === 0 && (Number(p.score) || 0) === lowestScore;
+                const crossed500 = (Number(p.score) || 0) >= 500;
+                return `
+                    <div class="bg-slate-950/70 border ${p.id === unoInPersonState.activePlayerId ? c.border : 'border-slate-800/80'} rounded-2xl p-3 flex items-center justify-between gap-2 transition">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="text-xs font-bold text-slate-500 w-5 text-center shrink-0">#${idx + 1}</span>
+                            <button type="button" onclick="unoSelectScorer('${p.id}')" id="uno-avatar-${p.id}" title="Select ${escapeHtml(p.name)} to stage points" class="w-8 h-8 rounded-xl ${c.bg} ${c.text} border ${c.border} font-extrabold flex items-center justify-center text-xs shrink-0 hover:scale-105 transition">
                                 ${escapeHtml(getPlayerInitial(p.name))}
+                            </button>
+                            <span class="w-2.5 h-2.5 rounded-full ${c.dot} shrink-0"></span>
+                            <input type="text" value="${escapeHtml(p.name)}" oninput="updateUnoPlayerNameLive('${p.id}', this.value)" class="bg-slate-900 border border-slate-700 hover:border-slate-500 focus:border-rose-500 rounded-lg px-2.5 py-1 text-sm font-bold text-white focus:outline-none w-28 sm:w-36 transition" placeholder="Player Name">
+                            <button type="button" onclick="removeUnoPlayer('${p.id}')" title="Remove Player" class="text-slate-500 hover:text-rose-400 p-1 transition shrink-0">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            ${stagedPts > 0 ? `<span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-rose-500/15 border border-rose-500/40 text-rose-300 font-mono">+${stagedPts} pending</span>` : ''}
+                            <span class="text-sm font-black font-mono ${crossed500 ? 'text-rose-400' : isLeading ? 'text-emerald-400' : 'text-slate-200'}">
+                                ${p.score} pts
                             </span>
-                            <span class="w-2.5 h-2.5 rounded-full ${color.dot} shrink-0"></span>
-                        </button>
-                        <input type="text" value="${escapeHtml(p.name)}" oninput="updateUnoPlayerNameLive('${p.id}', this.value)" class="bg-slate-900 border border-slate-700 focus:border-rose-500 rounded-lg px-2.5 py-1 text-sm font-bold text-white focus:outline-none w-28 sm:w-36">
-                        <button onclick="removeUnoPlayer('${p.id}')" title="Remove Player" class="text-slate-500 hover:text-rose-400 p-1 transition"><i class="fa-solid fa-trash-can text-xs"></i></button>
-                    </div>
-                    <div class="flex items-center gap-2 text-right">
-                        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${
-                            stagedPts > 0
-                                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                                : 'bg-slate-900 text-slate-500 border border-slate-800'
-                        }">+${stagedPts} pending</span>
-                        <div>
-                            <span class="font-black text-base ${p.score >= 500 ? 'text-rose-500' : idx === 0 ? 'text-emerald-400' : 'text-rose-400'}">${p.score}</span>
-                            <span class="text-xs text-slate-400">pts</span>
                         </div>
                     </div>
                 `;
-                rosterEl.appendChild(row);
-            });
+            }).join('');
         }
 
         function renderUnoInPerson() {
@@ -1090,55 +1098,60 @@
             if (roundBadge) roundBadge.innerText = `Round ${unoInPersonState.round}`;
 
             renderUnoPillsAndLabel();
+            renderUnoRosterOnly();
 
             const activeId = unoInPersonState.activePlayerId;
-            const activeDraft = ensureUnoPlayerDraft(activeId);
+            const draft = ensureUnoPlayerDraft(activeId);
 
             const manualInput = document.getElementById('uno-manual-pts-input');
             if (manualInput && document.activeElement !== manualInput) {
-                manualInput.value = activeDraft.manualPts > 0 ? activeDraft.manualPts : '';
-            }
-
-            const tagsContainer = document.getElementById('uno-hand-tags');
-            if (tagsContainer) {
-                tagsContainer.innerHTML = '';
-                if (activeDraft.cards.length === 0) {
-                    tagsContainer.innerHTML = `<span class="text-xs text-slate-500 italic">Tap cards above or enter manual points for this player.</span>`;
-                } else {
-                    activeDraft.cards.forEach((c, idx) => {
-                        const tag = document.createElement('span');
-                        tag.className = "bg-slate-800 border border-slate-700 text-slate-200 px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center space-x-1";
-                        tag.innerHTML = `<span>${escapeHtml(c.label)} (+${c.pts})</span><button onclick="unoRemoveDraftCard(${idx})" class="text-rose-400 hover:text-rose-300 ml-1">×</button>`;
-                        tagsContainer.appendChild(tag);
-                    });
-                }
+                manualInput.value = draft.manualPts > 0 ? draft.manualPts : '';
             }
 
             const countEl = document.getElementById('uno-hand-count');
-            if (countEl) countEl.innerText = activeDraft.cards.length;
+            if (countEl) countEl.innerText = draft.cards.length;
 
             const totalEl = document.getElementById('uno-draft-total-pts');
             if (totalEl) totalEl.innerText = getUnoPlayerStagedTotal(activeId);
 
-            renderUnoRosterOnly();
+            const tagsEl = document.getElementById('uno-hand-tags');
+            if (tagsEl) {
+                if (draft.cards.length === 0 && draft.manualPts === 0) {
+                    tagsEl.innerHTML = `<span class="text-xs text-slate-500 italic">Tap cards above or enter manual points for this player.</span>`;
+                } else {
+                    const cardChips = draft.cards.map((c, idx) => `
+                        <button type="button" onclick="unoRemoveDraftCard(${idx})" title="Click to remove card" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-800 hover:bg-rose-950/70 border border-slate-700 hover:border-rose-500/50 text-xs font-bold text-slate-200 transition">
+                            <span>${escapeHtml(c.label)}</span>
+                            <span class="text-rose-400 text-[10px]">(+${c.pts})</span>
+                            <i class="fa-solid fa-xmark text-[10px] text-slate-400 ml-0.5"></i>
+                        </button>
+                    `).join('');
+                    const manualChip = draft.manualPts > 0
+                        ? `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-indigo-950/70 border border-indigo-700/50 text-xs font-bold text-indigo-300">Manual: +${draft.manualPts} pts</span>`
+                        : '';
+                    tagsEl.innerHTML = cardChips + manualChip;
+                }
+            }
 
             const logEl = document.getElementById('uno-round-log');
             if (logEl) {
-                if (unoInPersonState.roundsHistory.length === 0) {
+                if (!Array.isArray(unoInPersonState.roundsHistory) || unoInPersonState.roundsHistory.length === 0) {
                     logEl.innerHTML = `<div class="text-slate-500 italic">No rounds recorded yet.</div>`;
                 } else {
-                    logEl.innerHTML = unoInPersonState.roundsHistory.map((r) => {
+                    logEl.innerHTML = unoInPersonState.roundsHistory.map(r => {
                         const badges = (r.entries || []).map((entry, idx) => {
-                            const color = getPlayerColor(entry, idx);
-                            return `<span class="inline-flex items-center gap-1 bg-slate-950/80 border border-slate-800 px-2 py-0.5 rounded-md">
-                                <span class="w-2 h-2 rounded-full ${color.dot}"></span>
-                                <span class="text-slate-300">${escapeHtml(entry.playerName)}:</span>
-                                <span class="font-bold ${entry.points > 0 ? 'text-rose-400' : 'text-slate-500'}">+${entry.points}</span>
-                            </span>`;
+                            const c = getPlayerColor(entry, idx);
+                            return `
+                                <span class="inline-flex items-center gap-1 bg-slate-950/80 border border-slate-800 px-2 py-0.5 rounded-md">
+                                    <span class="w-2 h-2 rounded-full ${c.dot}"></span>
+                                    <span class="text-slate-300">${escapeHtml(entry.playerName)}:</span>
+                                    <span class="font-bold ${entry.points > 0 ? 'text-rose-400' : 'text-slate-400'}">+${entry.points}</span>
+                                </span>
+                            `;
                         }).join(' ');
                         return `
-                            <div class="py-2 border-b border-slate-800/40 flex flex-col gap-1">
-                                <span class="font-semibold text-slate-300">Round #${r.roundNum}</span>
+                            <div class="py-2 border-b border-slate-800/40">
+                                <div class="font-semibold text-slate-300 mb-1">Round #${r.roundNum}</div>
                                 <div class="flex flex-wrap gap-1.5">${badges}</div>
                             </div>
                         `;
@@ -1161,7 +1174,6 @@
             roundsHistory: [],
             draftRound: {}
         };
-
         let victoryShown = false;
 
         function addHeartsPlayer() {
@@ -1169,12 +1181,12 @@
         }
 
         function updateHeartsPlayerNameLive(id, newName) {
-            const player = heartsInPersonState.players.find(p => p.id === id);
-            if (player) {
-                player.name = newName.trim() || 'Player';
+            const p = heartsInPersonState.players.find(item => item.id === id);
+            if (p) {
+                p.name = newName.trim() || 'Player';
                 const avatar = document.getElementById(`hearts-avatar-${id}`);
                 if (avatar) {
-                    avatar.textContent = getPlayerInitial(player.name);
+                    avatar.textContent = getPlayerInitial(p.name);
                 }
                 renderHeartsScoreboardTable();
                 saveArcadeState();
